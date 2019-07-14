@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#3333aa</color>
+    <color name="pageBackground">#272730</color>
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+    <color name="tabIndicatorColor">#91DDFF</color>
+    <color name="tabDividerColor">@null</color>
+    <color name="grey">#555555</color>
+    <color name="transparentGrey">#88555555</color>
+</resources>
