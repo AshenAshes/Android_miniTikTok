@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:background="#c99f9e9e">
+
+    <Button
+        android:id="@+id/btn_play"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="暂停"
+        android:layout_width="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:text="00:00/00:00"
+        android:gravity="center_vertical"
+        android:layout_toRightOf="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"  />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/tv_time"
+        android:layout_toLeftOf="@+id/btn_setting"
+        />
+
+    <Button
+        android:id="@+id/btn_setting"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:text="小屏" />
+
+</RelativeLayout>

@@ -19,4 +19,6 @@ public class FragmentRecommand extends Fragment {
 
         return view;
     }
+
+
 }

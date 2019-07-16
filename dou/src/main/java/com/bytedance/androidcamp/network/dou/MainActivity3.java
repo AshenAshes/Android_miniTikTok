@@ -3,6 +3,7 @@ package com.bytedance.androidcamp.network.dou;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -15,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -97,6 +100,15 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.RECORD_AUDIO},100);
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED
+                    &&ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO)
+                    ==PackageManager.PERMISSION_GRANTED
+                    &&ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    ==PackageManager.PERMISSION_GRANTED){
+                havePermission=true;
+                init();
+            }
         }
     }
 
@@ -147,6 +159,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
             RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams) mSurfaceView.getLayoutParams();
             mSurfaceView.setLayoutParams(layoutParams);
         }
+        initCamera();
     }
 
     private void initCamera(){
@@ -198,9 +211,9 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         //当SurfaceView变化时也需要做相应操作，这里未做相应操作
-        if (havePermission){
-            initCamera();
-        }
+//        if (havePermission){
+//            initCamera();
+//        }
     }
 
     @Override
@@ -281,13 +294,20 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.e("test","onRequestPermissionsResult1: ");
         switch (requestCode) {
             // 相机权限
             case 100:
-                havePermission = true;
-                init();
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        &&grantResults[1]==PackageManager.PERMISSION_GRANTED
+                        &&grantResults[2]==PackageManager.PERMISSION_GRANTED) {
+                    Log.e("test","onRequestPermissionsResult2: ");
+                    havePermission = true;
+                    init();
+                } else {
+                    Log.e("test","onRequestPermissionsResult3: ");
+                }
                 break;
         }
     }
-
 }

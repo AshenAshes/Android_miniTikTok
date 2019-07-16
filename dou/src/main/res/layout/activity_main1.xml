@@ -1,39 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black"
+    android:background="@null"
     android:fitsSystemWindows="true">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        app:liftOnScroll="true"
-        android:background="@null">
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:tabBackground="@null"
-            app:tabGravity="center"
-            app:tabIndicatorColor="@null"
-            app:tabIndicatorFullWidth="false"
-            app:tabSelectedTextColor="@color/tabIndicatorColor"
-            app:tabTextAppearance="@style/tabTextStyle"
-            app:tabTextColor="@color/white"
-            app:layout_scrollFlags="enterAlways"/>
-    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:tabBackground="@null"
+        app:tabGravity="center"
+        app:tabIndicatorColor="@null"
+        app:tabIndicatorFullWidth="false"
+        app:tabSelectedTextColor="@color/tabIndicatorColor"
+        app:tabTextAppearance="@style/tabTextStyle"
+        app:tabTextColor="@color/white" />
+
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="bottom"
@@ -45,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="首页"/>
+            android:text="首页" />
 
         <Button
             android:id="@+id/bottomButton2"
@@ -53,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="关注"/>
+            android:text="关注" />
 
         <ImageView
             android:id="@+id/bottomButton3"
@@ -72,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="消息"/>
+            android:text="消息" />
 
         <Button
             android:id="@+id/bottomButton5"
@@ -80,6 +74,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="我"/>
+            android:text="我" />
     </LinearLayout>
 </FrameLayout>

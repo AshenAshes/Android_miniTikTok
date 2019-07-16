@@ -6,22 +6,29 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.bytedance.androidcamp.network.dou.finalclass.DoubleBack;
 import com.bytedance.androidcamp.network.dou.fragment1.FragmentLocation;
 import com.bytedance.androidcamp.network.dou.fragment1.FragmentRecommand;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity1 extends AppCompatActivity {
     private static final int PAGE_COUNT=2;
+    DoubleBack doubleBack=new DoubleBack();
+    LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
+        linearLayout=findViewById(R.id.linearLayout);
 
         TabLayout tableLayout = findViewById(R.id.tab_layout);
         LinearLayout mLinearLayout=(LinearLayout) tableLayout.getChildAt(0);
@@ -41,10 +48,13 @@ public class MainActivity1 extends AppCompatActivity {
         pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                if(position==0)
+                if (position == 0) {
+                    linearLayout.setBackgroundColor(0x00000000);//@null
                     return new FragmentRecommand();
-                else
+                } else {
+                    linearLayout.setBackgroundColor(0xff000000);//black
                     return new FragmentLocation();
+                }
             }
 
             @Override
@@ -78,4 +88,22 @@ public class MainActivity1 extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        //实现Home键效果
+        //super.onBackPressed();这句话一定要注掉,不然又去调用默认的back处理方式了
+        long nowTime=System.currentTimeMillis();
+        long minusTime=nowTime-doubleBack.getFirstclickTime();
+        if(minusTime > 2000){
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_LONG).show();
+            doubleBack.setFirstClickTime(nowTime);
+        }
+        else{
+            Intent intent = new Intent(MainActivity1.this,ExitActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+
 }

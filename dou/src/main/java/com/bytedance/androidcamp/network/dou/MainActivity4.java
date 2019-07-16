@@ -9,8 +9,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.bytedance.androidcamp.network.dou.finalclass.DoubleBack;
 
 public class MainActivity4 extends AppCompatActivity {
+    DoubleBack doubleBack=new DoubleBack();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,5 +42,22 @@ public class MainActivity4 extends AppCompatActivity {
                 overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //实现Home键效果
+        //super.onBackPressed();这句话一定要注掉,不然又去调用默认的back处理方式了
+        long nowTime=System.currentTimeMillis();
+        long minusTime=nowTime-doubleBack.getFirstclickTime();
+        if(minusTime > 2000){
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_LONG).show();
+            doubleBack.setFirstClickTime(nowTime);
+        }
+        else{
+            Intent intent = new Intent(MainActivity4.this,ExitActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 }

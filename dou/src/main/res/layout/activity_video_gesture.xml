@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bytedance.androidcamp.network.dou.gesture.VideoGestureRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/GestureView"
+    android:background="@color/black">
+
+    <RelativeLayout
+        android:id="@+id/rl_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK
+            android:id="@+id/ijkPlayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_play_end"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#030303"
+            android:gravity="center"
+            android:text="播放结束"
+            android:textColor="#ddd"
+            android:textSize="30dp"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:id="@+id/rl_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@+id/rl_player"
+            android:layout_alignTop="@+id/rl_player"
+            android:background="#de262a3b">
+
+            <TextView
+                android:id="@+id/tv_load_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pb_loading"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="6dp"
+                android:text="正在加载"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <ProgressBar
+                android:id="@+id/pb_loading"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="60dp"
+                android:indeterminate="false"
+                android:indeterminateDrawable="@drawable/video_loading"
+                android:padding="5dp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <com.bytedance.androidcamp.network.dou.gesture.showChangeLayout
+        android:id="@+id/ResponseView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true">
+    </com.bytedance.androidcamp.network.dou.gesture.showChangeLayout>
+
+    <include
+        android:id="@+id/include_play_bottom"
+        layout="@layout/include_play_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true" />
+
+    <ImageView
+        android:id="@+id/doubleClickImg1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/doubleClickImg2"
+        android:layout_alignRight="@+id/doubleClickImg2"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:alpha="0"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="206dp"
+        android:layout_marginRight="-140dp"
+        android:src="@drawable/doubleclick1" />
+
+    <ImageView
+        android:id="@+id/doubleClickImg2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="134dp"
+        android:alpha="0"
+        android:layout_marginBottom="285dp"
+        android:src="@drawable/doubleclick2" />
+
+    <ImageView
+        android:id="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:alpha="0.5"
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:src="@drawable/pause"
+        android:visibility="visible" />
+
+</com.bytedance.androidcamp.network.dou.gesture.VideoGestureRelativeLayout>
