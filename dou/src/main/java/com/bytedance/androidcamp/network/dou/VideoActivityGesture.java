@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -41,8 +43,10 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class VideoActivityGesture extends AppCompatActivity implements VideoGestureRelativeLayout.VideoGestureListener{//View.OnClickListener,
     VideoPlayerIJK ijkPlayer = null;
-    Button btnSetting;
-    Button btnPlay;
+    ImageView btnFullScreen;
+    ImageView btnPortraitScreen;
+    ImageView btnPause;
+    ImageView btnPlay;
     ImageView pause;
     ImageView doubleClickImg1;
     ImageView doubleClickImg2;
@@ -87,7 +91,7 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
         Intent intent = new Intent(activity, VideoActivityGesture.class);
         intent.putExtra("url", url);
         activity.startActivity(intent);
-    }
+}
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,8 +118,10 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
 
     private void init() {
         btnPlay = findViewById(R.id.btn_play);
+        btnPause=findViewById(R.id.btn_pause);
         seekBar = findViewById(R.id.seekBar);
-        btnSetting = findViewById(R.id.btn_setting);
+        btnFullScreen = findViewById(R.id.btn_fullScreen);
+        btnPortraitScreen = findViewById(R.id.btn_portrait);
 
         pause = findViewById(R.id.pause);
         doubleClickImg1 = findViewById(R.id.doubleClickImg1);
@@ -175,17 +181,44 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (btnPlay.getText().toString().equals(getResources().getString(R.string.pause))) {
+                if (btnPlay.getVisibility()==View.VISIBLE) {
                     ijkPlayer.pause();
-                    btnPlay.setText(getResources().getString(R.string.media_play));
+                    btnPlay.setVisibility(View.INVISIBLE);
+                    btnPause.setVisibility(View.VISIBLE);
+                    pause.setVisibility(View.VISIBLE);
                 } else {
                     ijkPlayer.start();
-                    btnPlay.setText(getResources().getString(R.string.pause));
+                    btnPlay.setVisibility(View.VISIBLE);
+                    btnPause.setVisibility(View.INVISIBLE);
+                    pause.setVisibility(View.INVISIBLE);
                 }
             }
         });
 
-        btnSetting.setOnClickListener(new View.OnClickListener() {
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (btnPlay.getVisibility()==View.VISIBLE) {
+                    ijkPlayer.pause();
+                    btnPlay.setVisibility(View.INVISIBLE);
+                    btnPause.setVisibility(View.VISIBLE);
+                    pause.setVisibility(View.VISIBLE);
+                } else {
+                    ijkPlayer.start();
+                    btnPlay.setVisibility(View.VISIBLE);
+                    btnPause.setVisibility(View.INVISIBLE);
+                    pause.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        btnFullScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggle();
+            }
+        });
+        btnPortraitScreen.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 toggle();
@@ -233,12 +266,8 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
 
         ijkPlayer = findViewById(R.id.ijkPlayer);
         ijkPlayer.setListener(new VideoPlayerListener());
-        //url="https://lf1-hscdn-tos.pstatp.com/obj/developer-baas/baas/tt7217xbo2wz3cem41/4818d1ade819f247_1563203885486.mp4";
-        //String url="https://lf6-hscdn-tos.pstatp.com/obj/developer-baas/baas/tt7217xbo2wz3cem41/18fe83b9a37448d4_1563282632341.mp4";
         url=getIntent().getStringExtra("url");
         url=url.replaceFirst("https","http");
-        //ijkPlayer.setVideoPath("http://sf3-hscdn-tos.pstatp.com/obj/developer-baas/baas/tt7217xbo2wz3cem41/ad8645d5ca28e08c_1563284611336.mp4");
-        //getIntent().getStringExtra("url")
         ijkPlayer.setVideoPath(url);
 
         ijkPlayer.setListener(new VideoPlayerListener() {
@@ -249,7 +278,8 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
             @Override
             public void onCompletion(IMediaPlayer mp) {
                 seekBar.setProgress(100);
-                btnPlay.setText("播放");
+                btnPause.setVisibility(View.VISIBLE);
+                btnPlay.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.VISIBLE);
             }
 
@@ -294,18 +324,31 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
     @Override
     protected void onPause() {
         mPlayingPos = ijkPlayer.getCurrentPosition();
-        ijkPlayer.stop();
+        ijkPlayer.pause();
         pause.setVisibility(View.VISIBLE);
+        btnPause.setVisibility(View.VISIBLE);
+        btnPlay.setVisibility(View.INVISIBLE);
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        if(mPlayingPos > 0){
-            ijkPlayer.seekTo(mPlayingPos);
-            mPlayingPos = 0;
-        }
+//        if(mPlayingPos > 0){
+//            ijkPlayer.seekTo(mPlayingPos);
+//            mPlayingPos = 0;
+//        }
+//        super.onResume();
+        //view被销毁了，所以上面那种没有，不过进度保留还有问题，可能是ijk自己的误差
         super.onResume();
+        if(ijkPlayer != null){
+            initIJKPlayer();
+            ijkPlayer.seekTo(mPlayingPos);
+            mPlayingPos=0;
+            pause.setVisibility(View.INVISIBLE);
+            btnPause.setVisibility(View.INVISIBLE);
+            btnPlay.setVisibility(View.VISIBLE);
+            handler.sendEmptyMessageDelayed(MSG_REFRESH, 1000);
+        }
     }
 
     @Override
@@ -316,6 +359,17 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
         }
         IjkMediaPlayer.native_profileEnd();
         handler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (ijkPlayer != null) {
+            ijkPlayer.stop();
+            ijkPlayer.release();
+            ijkPlayer = null;
+        }
+
+        super.onDestroy();
     }
 
     private void videoScreenInit() {
@@ -349,10 +403,15 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
         }
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlPlayer.getLayoutParams();
+        Log.d("windowWidth:",String.valueOf(width));                //1080
+        Log.d("windowHeight",String.valueOf(height));               //1920
+        Log.d("layoutWidth",String.valueOf(layoutParams.width));    //-1
+        Log.d("layoutHeight",String.valueOf(layoutParams.height));  //-1
         layoutParams.height = (int) (mVideoHeight * ratio);
         layoutParams.width = (int) width;
         rlPlayer.setLayoutParams(layoutParams);
-        btnSetting.setText(getResources().getString(R.string.fullScreek));
+        btnFullScreen.setVisibility(View.INVISIBLE);
+        btnPortraitScreen.setVisibility(View.VISIBLE);
         ijkPlayer.start();
     }
 
@@ -372,7 +431,8 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
         layoutParams.height = (int) RelativeLayout.LayoutParams.MATCH_PARENT;
         layoutParams.width = (int) RelativeLayout.LayoutParams.MATCH_PARENT;
         rlPlayer.setLayoutParams(layoutParams);
-        btnSetting.setText(getResources().getString(R.string.smallScreen));
+        btnFullScreen.setVisibility(View.VISIBLE);
+        btnPortraitScreen.setVisibility(View.INVISIBLE);
         ijkPlayer.start();
     }
 
@@ -462,16 +522,18 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
     @Override
     public void onSingleTapGesture(MotionEvent e) {
         // 暂停/播放
-        if (ijkPlayer.isPlaying() && !isPrepare) {
+        if (ijkPlayer.isPlaying() && btnPlay.getVisibility()==View.VISIBLE) {
             Log.d("check:","isPlaying");
-            btnPlay.setText("播放");
+            btnPlay.setVisibility(View.INVISIBLE);
+            btnPause.setVisibility(View.VISIBLE);
             pause.setVisibility(View.VISIBLE);
             ijkPlayer.pause();
         }
         else{
             Log.d("check:", "isNotPlaying");
             ijkPlayer.start();
-            btnPlay.setText("暂停");
+            btnPlay.setVisibility(View.VISIBLE);
+            btnPause.setVisibility(View.INVISIBLE);
             pause.setVisibility(View.INVISIBLE);
         }
         // 显示/隐藏进度条

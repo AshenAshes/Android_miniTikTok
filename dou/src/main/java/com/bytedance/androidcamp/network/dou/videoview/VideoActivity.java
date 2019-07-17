@@ -1,4 +1,4 @@
-package com.bytedance.androidcamp.network.dou;
+package com.bytedance.androidcamp.network.dou.videoview;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bytedance.androidcamp.network.dou.R;
 
 public class VideoActivity extends AppCompatActivity {
     int mPlayingPos = 0;

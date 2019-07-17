@@ -3,15 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:orientation="horizontal"
-    android:background="#c99f9e9e">
+    android:background="@color/black">
 
-    <Button
-        android:id="@+id/btn_play"
+    <ImageView
+        android:id="@+id/btn_pause"
         style="?android:attr/borderlessButtonStyle"
-        android:text="暂停"
+        android:src="@drawable/playpause"
         android:layout_width="60dp"
+        android:visibility="invisible"
+        android:scaleY="0.9"
+        android:scaleX="0.9"
         android:layout_alignParentLeft="true"
         android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/btn_play"
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/playing"
+        />
 
     <TextView
         android:id="@+id/tv_time"
@@ -19,23 +31,34 @@
         android:gravity="center_vertical"
         android:layout_toRightOf="@+id/btn_play"
         android:layout_width="wrap_content"
+        android:textColor="@color/white"
         android:layout_height="match_parent"  />
 
     <SeekBar
         android:id="@+id/seekBar"
+        android:progressDrawable="@drawable/seek_bar_color"
         android:layout_width="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/tv_time"
-        android:layout_toLeftOf="@+id/btn_setting"
+        android:layout_toLeftOf="@+id/btn_fullScreen"
         />
 
-    <Button
-        android:id="@+id/btn_setting"
+    <ImageView
+        android:id="@+id/btn_fullScreen"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="60dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:text="小屏" />
+        android:src="@drawable/fullscreen"/>
+
+    <ImageView
+        android:id="@+id/btn_portrait"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        android:src="@drawable/portrait_screen"/>
 
 </RelativeLayout>

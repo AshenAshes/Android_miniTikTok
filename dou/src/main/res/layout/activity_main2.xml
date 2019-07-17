@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/pageBackground"
-    android:fitsSystemWindows="true">
+    android:background="@color/pageBackground">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"

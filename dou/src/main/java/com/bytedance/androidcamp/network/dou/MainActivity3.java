@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -14,6 +15,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -28,6 +30,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,9 +56,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+
 public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    private Button btnStart;
+    private ImageView btnStart;
     private MediaRecorder mMediaRecorder;
     private MediaPlayer mMediaPlayer;
     private SurfaceHolder mSurfaceHolder;
@@ -64,19 +69,28 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     private static int mCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
     private SurfaceView mSurfaceView;
     private Boolean stap = true;
-    private Button btnTurn;
-    private Button btnDelete;
-    private Button btnUpload;
+    private Boolean setFlash = false;
+    private Boolean set10s = false;
+    private Boolean setPicture = false;
+    private ImageView btnTurn;
+    private Button btn10s;
+    private ImageView btnRefrash;
+    private ImageView btnExit;
+    private ImageView btnFlash;
+    private ImageView btnFlashOff;
+    private ImageView btnDelete;
+    private Button btnPicture;
+    private ImageView btnUpload;
     private int useHeight, useWidth;
     private boolean havePermission = false;
     private Camera.Size mSize;
     private boolean isCameraBack = true;
     private String videopath;
     private String imagepath;
+    private String deletePath;
     private TextView mLoad;
-
-    String srcPath = Environment.getExternalStorageDirectory().getPath() + "/mediarecorder/";
-    String srcName = "video.mp4";
+    private Retrofit retrofit;
+    private IMiniDouyinService miniDouyinService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,34 +113,141 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.RECORD_AUDIO}, 100);
         }
+        btn10s = findViewById(R.id.btn_10s);
+        btn10s.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (set10s == false) {
+                    btnPicture.setTextColor(Color.WHITE);
+                    btn10s.setTextColor(Color.RED);
+                    btn10s.setText("取消10s录制");
+                    set10s = true;
+                } else {
+                    btnPicture.setTextColor(Color.RED);
+                    btn10s.setTextColor(Color.WHITE);
+                    btn10s.setText("10s录制");
+                    set10s = false;
+                }
+            }
+        });
+
+        btnRefrash = findViewById(R.id.btn_refresh);
+        btnRefrash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnExit.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(MainActivity3.this, MainActivity3.class);
+                startActivity(intent);
+            }
+        });
+        btnRefrash.setVisibility(View.INVISIBLE);
+
+        btnExit = findViewById(R.id.btn_exit);
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity3.this, MainActivity1.class);
+                startActivity(intent);
+            }
+        });
+
+        btnPicture = findViewById(R.id.btn_picture);
+        btnPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (setPicture == false) {
+                    btnPicture.setText("图片模式");
+                    btn10s.setVisibility(View.INVISIBLE);
+                    setPicture = true;
+                } else {
+                    btnPicture.setText("视频模式");
+                    btn10s.setVisibility(View.VISIBLE);
+                    setPicture = false;
+                }
+            }
+        });
+
         btnStart = findViewById(R.id.btn_start);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (stap == true) {
-                    initMediaRecord();
-                    stap = false;
-                    btnStart.setText("STOP");
-                } else {
-                    if (mMediaRecorder != null) {
-                        mMediaRecorder.stop();
-                        mMediaRecorder.reset();
-                        mMediaRecorder.release();
-                        mMediaRecorder = null;
-                        mCamera.lock();
+                    btn10s.setVisibility(View.INVISIBLE);
+                    if (setPicture == true) {
+                        takePicture();
+                        btnTurn.setVisibility(View.INVISIBLE);
+                        btn10s.setVisibility(View.INVISIBLE);
+                        btnDelete.setVisibility(View.VISIBLE);
+                        btnRefrash.setVisibility(View.VISIBLE);
+                        btnExit.setVisibility(View.INVISIBLE);
+                        btnStart.setVisibility(View.INVISIBLE);
+                        btnFlash.setVisibility(View.INVISIBLE);
+                    } else {
+                        initMediaRecord();
+                        if (set10s == true) {
+                            btnStart.setEnabled(false);
+                            view.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    stopRecord();
+                                }
+                            }, 10000);
+                        }
+                        stap = false;
+                        //btnStart.setText("STOP");
                     }
-                    btnDelete.setVisibility(View.VISIBLE);
-                    btnUpload.setVisibility(View.VISIBLE);
-                    mCamera.setPreviewCallback(null);
-                    mCamera.stopPreview();
-                    mCamera.release();
-                    mCamera = null;
+                } else {
+                    stopRecord();
                     playvideo();
                     stap = true;
-                    btnStart.setText("START");
+                    //btnStart.setText("START");
                 }
             }
         });
+
+        btnFlash = findViewById(R.id.btn_flash);
+        btnFlashOff = findViewById(R.id.btn_flashoff);
+        btnFlash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (setFlash == false) {
+                    setFlash = true;
+                    btnFlashOff.setVisibility(View.INVISIBLE);
+                    btnFlash.setVisibility(View.VISIBLE);
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
+                } else {
+                    setFlash = false;
+                    btnFlashOff.setVisibility(View.VISIBLE);
+                    btnFlash.setVisibility(View.INVISIBLE);
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
+                }
+            }
+        });
+        btnFlashOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (setFlash == false) {
+                    setFlash = true;
+                    btnFlashOff.setVisibility(View.INVISIBLE);
+                    btnFlash.setVisibility(View.VISIBLE);
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
+                } else {
+                    setFlash = false;
+                    btnFlashOff.setVisibility(View.VISIBLE);
+                    btnFlash.setVisibility(View.INVISIBLE);
+                    Camera.Parameters parameters = mCamera.getParameters();
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    mCamera.setParameters(parameters);
+                }
+            }
+        });
+
         btnTurn = findViewById(R.id.btn_turn);
         btnTurn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,81 +259,111 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File file = new File(videopath);
+                File file = new File(deletePath);
                 if (file.isFile() && file.exists()) {
                     Boolean ifDelete = file.delete();
                     if (ifDelete == true) {
                         Toast.makeText(MainActivity3.this, "Delete Successfully!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity3.this, MainActivity1.class);
+                        Intent intent = new Intent(MainActivity3.this, MainActivity3.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(MainActivity3.this, "Delete Failed!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity3.this, MainActivity1.class);
+                        Intent intent = new Intent(MainActivity3.this, MainActivity3.class);
                         startActivity(intent);
                     }
                 }
             }
         });
         btnDelete.setVisibility(View.INVISIBLE);
+
         btnUpload = findViewById(R.id.btn_upload);
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mLoad.setVisibility(View.VISIBLE);
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                if (videopath.startsWith("http"))
-                    mmr.setDataSource(videopath, new HashMap());//获取网络视频第一帧图片
-                else mmr.setDataSource(videopath);//本地视频
-                Bitmap bitmap = mmr.getFrameAtTime();
-                //保存图片
-                File f = getOutputMediaFile(2);
-                if (f.exists()) {
-                    f.delete();
-                }
-                try {
-                    FileOutputStream out = new FileOutputStream(f);
-                    if (bitmap == null) {
-                    }
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                    out.flush();
-                    out.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mmr.release();
-                MultipartBody.Part coverImagePart = getMultipartFromFile("cover_image", imagepath);
-                final MultipartBody.Part videoPart = getMultipartFromFile("video", videopath);
-                Call<Response_POST> call = getMiniDouyinService().postVideo("3170101510", "goldfische", coverImagePart, videoPart);
-                call.enqueue(new Callback<Response_POST>() {
-                    @Override
-                    public void onResponse(Call<Response_POST> call, Response<Response_POST> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            Response_POST videos = response.body();
-                            if (videos.getSuccess() == true) {
-                                Toast.makeText(MainActivity3.this, "Post Successfully!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(MainActivity3.this, MainActivity1.class);
-                                startActivity(intent);
-                            }
-                        }
-                    }
+                getImageForVideo(videopath, new OnLoadVideoImageListener() {
 
                     @Override
-                    public void onFailure(Call<Response_POST> call, Throwable throwable) {
-                        Toast.makeText(MainActivity3.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity3.this, MainActivity1.class);
-                        startActivity(intent);
+                    public void onLoadComplete() {
+                        MultipartBody.Part coverImagePart = getMultipartFromFile("cover_image", imagepath);
+                        final MultipartBody.Part videoPart = getMultipartFromFile("video", videopath);
+                        Call<Response_POST> call = getMiniDouyinService().postVideo("3170101510", "goldfische", coverImagePart, videoPart);
+                        call.enqueue(new Callback<Response_POST>() {
+                            @Override
+                            public void onResponse(Call<Response_POST> call, Response<Response_POST> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Response_POST videos = response.body();
+                                    if (videos.getSuccess() == true) {
+                                        Toast.makeText(MainActivity3.this, "Post Successfully!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(MainActivity3.this, MainActivity3.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Response_POST> call, Throwable throwable) {
+                                Toast.makeText(MainActivity3.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(MainActivity3.this, MainActivity3.class);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 });
+
             }
         });
         btnUpload.setVisibility(View.INVISIBLE);
-
     }
 
-    private Retrofit retrofit;
-    private IMiniDouyinService miniDouyinService;
+    private void takePicture() {
+        Camera.Parameters parameters = mCamera.getParameters();
+        //TODO
+        parameters.set("orientation", "potrait");
+        parameters.set("rotation", 90);
+        mCamera.setParameters(parameters);
+        mCamera.takePicture(null, null, new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] bytes, Camera camera) {
+                File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+                if (pictureFile == null) return;
+                else {
+                    File f = getOutputMediaFile(2);
+                    if (f.exists()) {
+                        f.delete();
+                    }
+                    try {
+                        FileOutputStream out = new FileOutputStream(f);
+                        out.write(bytes);
+                        out.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+
+    private void stopRecord() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder.stop();
+            mMediaRecorder.reset();
+            mMediaRecorder.release();
+            mMediaRecorder = null;
+            mCamera.lock();
+        }
+        btnStart.setEnabled(false);
+        btnDelete.setVisibility(View.VISIBLE);
+        deletePath = videopath;
+        btnUpload.setVisibility(View.VISIBLE);
+        mCamera.setPreviewCallback(null);
+        mCamera.stopPreview();
+        mCamera.release();
+        mCamera = null;
+    }
 
     public IMiniDouyinService getMiniDouyinService() {
         if (retrofit == null) {
@@ -263,12 +414,16 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
                 out.flush();
                 out.close();
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             mmr.release();
+            if (listener != null) {
+                listener.onLoadComplete();
+            }
             return f;
         }
 
@@ -279,6 +434,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     }
 
     public interface OnLoadVideoImageListener {
+        void onLoadComplete();
     }
 
     private MultipartBody.Part getMultipartFromFile(String name, String path) {
@@ -474,14 +630,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
         return mediaFile;
     }
 
-    /**
-     * 设置预览角度，setDisplayOrientation本身只能改变预览的角度
-     * previewFrameCallback以及拍摄出来的照片是不会发生改变的，拍摄出来的照片角度依旧不正常的
-     * 拍摄的照片需要自行处理
-     * 这里Nexus5X的相机简直没法吐槽，后置摄像头倒置了，切换摄像头之后就出现问题了。
-     *
-     * @param activity
-     */
     public static int calculateCameraPreviewOrientation(Activity activity) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(mCameraID, info);
@@ -574,5 +722,4 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
             mMediaPlayer.release();
         }
     }
-
 }

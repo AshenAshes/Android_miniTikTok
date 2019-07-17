@@ -24,6 +24,5 @@ public interface IMiniDouyinService {
 
     @GET(PATH_GET)
     Call<Response_GET> getVideo();
-
 }
 

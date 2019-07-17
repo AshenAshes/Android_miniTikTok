@@ -33,9 +33,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class FragmentLocation extends Fragment {
     RecyclerView mRv;
+    MyLayoutManager myLayoutManager;
     private List<Video> mVideos = new ArrayList<>();
     View view;
 
@@ -70,7 +72,7 @@ public class FragmentLocation extends Fragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
             return new MyViewHolder(LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.rv_item,viewGroup,false));
+                    .inflate(R.layout.rv_item_location,viewGroup,false));
         }
 
         @Override
@@ -140,5 +142,4 @@ public class FragmentLocation extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         return (int) (dip * density + 0.5);
     }
-
 }

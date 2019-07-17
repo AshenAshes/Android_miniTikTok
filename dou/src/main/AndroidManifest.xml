@@ -9,6 +9,12 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -18,6 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <meta-data android:name="Mob-AppKey" android:value="2bbec4a421f10"/>
+        <meta-data android:name="Mob-AppSecret" android:value="7d53415ebb75aa5a8d44eeb7916e0c7a"/>
         <activity android:name=".SplashScreenActivity"  android:theme="@style/splashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,7 +44,7 @@
         <activity android:name=".MainActivity3"/>
         <activity android:name=".MainActivity4"/>
         <activity android:name=".MainActivity5"/>
-        <activity android:name=".VideoActivity"/>
+        <activity android:name=".videoview.VideoActivity"/>
         <activity android:name=".ExitActivity"/>
         <activity android:name=".VideoActivityGesture" android:configChanges="keyboardHidden|orientation|screenSize">
             <!--<intent-filter>-->
@@ -45,5 +53,17 @@
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
+        <activity android:name=".LoginActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
     </application>
 </manifest>
