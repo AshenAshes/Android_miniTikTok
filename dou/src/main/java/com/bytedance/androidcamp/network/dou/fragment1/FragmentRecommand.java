@@ -183,8 +183,30 @@ public class FragmentRecommand extends Fragment {
         ijkPlayer.pause();
     }
 
+    public static RecyclerView.ViewHolder getHolder(RecyclerView rv,int index){
+        if(null == rv || null == rv.getAdapter() || rv.getAdapter().getItemCount() == 0)
+            return null;
+        int count = rv.getAdapter().getItemCount();
+        if(index < 0 || index > count -1)
+            return null;
+        RecyclerView.ViewHolder holder = rv.findViewHolderForAdapterPosition(index);
+        if(holder == null){
+            RecyclerView.RecycledViewPool pool = rv.getRecycledViewPool();
+            int type=0;
+            int recyclerViewCount = pool.getRecycledViewCount(type);
+            holder = pool.getRecycledView(type);
+            try{
+                pool.putRecycledView(holder);
+            }catch (Exception e){
+
+            }
+        }
+        return holder;
+    }
+
     private void playVideo(int position) {
         RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(position);
+        Log.d("findViewfindView",(holder == null) ? "yes" : "no" );
         final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
         ijkPlayer.start();
     }
