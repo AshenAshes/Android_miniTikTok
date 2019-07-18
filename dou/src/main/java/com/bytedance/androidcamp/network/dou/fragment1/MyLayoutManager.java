@@ -39,7 +39,7 @@ public class MyLayoutManager extends LinearLayoutManager implements RecyclerView
         int position = getPosition(view);
 //        if (0 == position) {
             if (mOnViewPagerListener != null) {
-                mOnViewPagerListener.onPageSelected(getPosition(view), false);
+                mOnViewPagerListener.onPageSelected(view, position, false);
             }
 //        }
     }
@@ -55,7 +55,7 @@ public class MyLayoutManager extends LinearLayoutManager implements RecyclerView
                 View view = mPagerSnapHelper.findSnapView(this);
                 int position = getPosition(view);
                 if (mOnViewPagerListener != null) {
-                    mOnViewPagerListener.onPageSelected(position, position == getItemCount() - 1);
+                    mOnViewPagerListener.onPageSelected(view, position, position == getItemCount() - 1);
                 }
                 //postion  ---回调 ----》播放
                 break;

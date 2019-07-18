@@ -93,22 +93,13 @@ public class FragmentRecommand extends Fragment {
             @Override
             public void onPageRelease(boolean isNext, int position) {
                 Log.e(TAG, "释放位置:" + position + " 下一页:" + isNext);
-                if (isNext) {
-                    if(position < mIndex.size())
-                        playVideo(mIndex.get(position+1));
-                    pauseVideo(mIndex.get(position));
-                } else {
-                    if(position != 0)
-                        playVideo(mIndex.get(position-1));
-                    pauseVideo(mIndex.get(position));
-                }
                 //releaseVideo(index);
             }
 
             @Override
-            public void onPageSelected(int position, boolean isbottom) {
+            public void onPageSelected(View v, int position, boolean isbottom) {
                 Log.e(TAG, "选择位置:" + position + " 下一页:" + isbottom);
-                playVideo(position);
+                playVideo(v,position);
             }
         });
     }
@@ -168,18 +159,14 @@ public class FragmentRecommand extends Fragment {
         }
     }
 
-    private void releaseVideo(int index){
-        RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(index);
-        final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
-        final ImageView pause = holder.itemView.findViewById(R.id.pause);
+    private void releaseVideo(View v,int index){
+        final VideoPlayerIJK ijkPlayer = v.findViewById(R.id.ijkPlayer);
         ijkPlayer.stop();
         //animate?
     }
 
-    private void pauseVideo(int index){
-        RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(index);
-        final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
-        final ImageView pause = holder.itemView.findViewById(R.id.pause);
+    private void pauseVideo(View v,int index){
+        final VideoPlayerIJK ijkPlayer = v.findViewById(R.id.ijkPlayer);
         ijkPlayer.pause();
     }
 
@@ -204,10 +191,8 @@ public class FragmentRecommand extends Fragment {
         return holder;
     }
 
-    private void playVideo(int position) {
-        RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(position);
-        Log.d("findViewfindView",(holder == null) ? "yes" : "no" );
-        final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
+    private void playVideo(View v,int position) {
+        final VideoPlayerIJK ijkPlayer = v.findViewById(R.id.ijkPlayer);
         ijkPlayer.start();
     }
 
