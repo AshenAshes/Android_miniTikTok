@@ -1,6 +1,9 @@
 package com.bytedance.androidcamp.network.dou;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -55,8 +58,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.airbnb.lottie.LottieAnimationView;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+import static com.mob.MobSDK.getContext;
 
 public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -101,13 +106,33 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     private TextView mLoad;
     private Retrofit retrofit;
     private IMiniDouyinService miniDouyinService;
+    private LottieAnimationView lottieview;
+    Animator animator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        mLoad = findViewById(R.id.tv_LOAD);
-        mLoad.setVisibility(View.INVISIBLE);
+        animator = AnimatorInflater.loadAnimator(getContext(),R.animator.breath);
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+
+//        mLoad = findViewById(R.id.tv_LOAD);
+        lottieview=findViewById(R.id.lottie_LOAD);
+        lottieview.setVisibility(View.INVISIBLE);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
@@ -129,11 +154,16 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
             public void onClick(View view) {
                 if (set10s == false) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                    btnPicture.setVisibility(View.INVISIBLE);
+>>>>>>> replace ijkplayer with videoview
                     btnPicture.setTextColor(Color.WHITE);
                     btn10s.setTextColor(Color.RED);
                     btn10s.setText("取消10s录制");
                     set10s = true;
                 } else {
+                    btnPicture.setVisibility(View.VISIBLE);
                     btnPicture.setTextColor(Color.RED);
                     btn10s.setTextColor(Color.WHITE);
 =======
@@ -196,6 +226,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
 =======
 >>>>>>> replace ijkplayer with videoview
         btnStart = findViewById(R.id.btn_start);
+        animator.setTarget(btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,11 +250,13 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
 
 >>>>>>> replace ijkplayer with videoview
                         initMediaRecord();
+                        animator.start();
                         if (set10s == true) {
                             btnStart.setEnabled(false);
                             view.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    animator.cancel();
                                     stopRecord();
                                 }
                             }, 10000);
@@ -236,6 +269,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
 >>>>>>> replace ijkplayer with videoview
                     }
                 } else {
+                    animator.cancel();
                     stopRecord();
                     playvideo();
                     stap = true;
@@ -342,7 +376,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mLoad.setVisibility(View.VISIBLE);
+                lottieview.setVisibility(View.VISIBLE);
                 getImageForVideo(videopath, new OnLoadVideoImageListener() {
 
                     @Override
@@ -379,11 +413,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     }
 
     private void takePicture() {
-        Camera.Parameters parameters = mCamera.getParameters();
-        //TODO
-        parameters.set("orientation", "potrait");
-        parameters.set("rotation", 90);
-        mCamera.setParameters(parameters);
         mCamera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] bytes, Camera camera) {

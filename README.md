@@ -3,7 +3,13 @@
 Contributors: **AshenAshes**, **RUA**
 
 ---
-2019.7.17 [4am]
+2019.7.18 [7am]
+
+&emsp;&emsp;To be continued later...
+
+
+---
+2019.7.17 [10am]
 
 &emsp;&emsp;In the early morning I was too tired to add the RUA's camera part to project. Now I update it.
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,14 +11,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/sv_videorecord"/>
-        <TextView
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_LOAD"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="视频上传中……"-->
+            <!--android:textSize="30sp"-->
+            <!--android:textColor="@android:color/holo_red_light"-->
+            <!--android:layout_centerInParent="true"/>-->
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_LOAD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_LOAD"
-            android:text="视频上传中……"
-            android:textSize="30sp"
-            android:textColor="@android:color/holo_red_light"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/material_wave_loading"/>
+
         <!--<Button-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -27,23 +39,24 @@
             <!--android:layout_centerHorizontal="true"/>-->
         <ImageView
             android:id="@+id/btn_start_out"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:src="@drawable/camerabuttonout"/>
+
         <ImageView
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:src="@drawable/camerabuttonin"/>
 
         <!--<Button-->
@@ -65,7 +78,7 @@
             android:id="@+id/btn_refresh"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:scaleY="0.8"
             android:scaleX="0.8"
@@ -75,14 +88,11 @@
             android:id="@+id/btn_delete"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:scaleY="0.8"
-            android:scaleX="0.8"
-            android:layout_alignLeft="@+id/btn_start"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
-            android:layout_marginRight="-40dp"
-            android:src="@drawable/delete" />
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="60dp"
+            android:src="@drawable/delete"/>
 
         <!--<Button-->
             <!--android:layout_width="wrap_content"-->
@@ -91,6 +101,7 @@
             <!--android:text="UPLOAD"-->
             <!--android:layout_alignParentRight="true"-->
             <!--android:layout_below="@+id/btn_delete"/>-->
+
         <ImageView
             android:id="@+id/btn_upload"
             android:layout_width="60dp"
@@ -100,7 +111,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="49dp"
+            android:layout_marginBottom="60dp"
             android:src="@drawable/upload" />
 
         <LinearLayout
@@ -114,7 +125,7 @@
                 android:id="@+id/btn_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="30dp"
                 android:background="@null"
                 android:text="视频模式"
                 android:textColor="@color/red" />
@@ -122,7 +133,7 @@
                 android:id="@+id/btn_10s"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="30dp"
                 android:background="@null"
                 android:text="10s录制"
                 android:textColor="@color/white" />
@@ -137,7 +148,7 @@
         <ImageView
             android:id="@+id/btn_turn_out"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
@@ -145,7 +156,7 @@
         <ImageView
             android:id="@+id/btn_turn"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
@@ -221,7 +232,7 @@
             android:layout_alignStart="@+id/btn_refresh"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/exit" />
 
 =======

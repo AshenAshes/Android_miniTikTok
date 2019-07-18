@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pageBackground"
-    android:fitsSystemWindows="true">
+    android:background="@color/pageBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

@@ -44,7 +44,7 @@
         <activity android:name=".MainActivity3"/>
         <activity android:name=".MainActivity4"/>
         <activity android:name=".MainActivity5"/>
-        <activity android:name=".videoview.VideoActivity"/>
+        <activity android:name=".VideoActivity"/>
         <activity android:name=".ExitActivity"/>
         <activity android:name=".VideoActivityGesture" android:configChanges="keyboardHidden|orientation|screenSize">
             <!--<intent-filter>-->

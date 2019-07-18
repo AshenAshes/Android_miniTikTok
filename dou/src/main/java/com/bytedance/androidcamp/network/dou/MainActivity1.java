@@ -32,11 +32,19 @@ public class MainActivity1 extends AppCompatActivity {
         setContentView(R.layout.activity_main1);
         linearLayout=findViewById(R.id.linearLayout);
 
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+
         TabLayout tableLayout = findViewById(R.id.tab_layout);
         LinearLayout mLinearLayout=(LinearLayout) tableLayout.getChildAt(0);
         mLinearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         mLinearLayout.setDividerDrawable(ContextCompat.getDrawable(this, R.drawable.tabdivider_vertical));
-        mLinearLayout.setDividerPadding(dip2px(15));
+        mLinearLayout.setDividerPadding(dip2px(40));
 //      mLinearLayout.setBackgroundColor(getResources().getColor(R.color.tabDividerColor));
         mLinearLayout.setBackgroundColor(0);
 
