@@ -6,6 +6,13 @@
     android:orientation="vertical"
     android:background="@color/pageBackground">
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/divider"
+        android:layout_above="@+id/buttonLine"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="wrap_content"
@@ -24,12 +31,6 @@
         style="@style/myDividerStyle"
         android:layout_below="@+id/tab_layout"/>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider"
-        android:layout_above="@+id/buttonLine"/>
 
     <LinearLayout
         android:id="@+id/buttonLine"

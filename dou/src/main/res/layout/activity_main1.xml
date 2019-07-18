@@ -13,7 +13,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         app:tabBackground="@null"
         app:tabGravity="center"
         app:tabIndicatorColor="@null"
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="bottom"
-        android:background="@null">
+        android:background="@android:color/transparent">
 
         <Button
             android:id="@+id/bottomButton1"

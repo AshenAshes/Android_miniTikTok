@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bytedance.androidcamp.network.dou.R;
-import com.bytedance.androidcamp.network.dou.VideoActivityGesture;
 import com.bytedance.androidcamp.network.dou.api.IMiniDouyinService;
 import com.bytedance.androidcamp.network.dou.model.Response_GET;
 import com.bytedance.androidcamp.network.dou.model.Video;
+import com.bytedance.androidcamp.network.dou.VideoActivity;
 import com.bytedance.androidcamp.network.lib.util.ImageHelper;
 
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class FragmentLocation extends Fragment {
     RecyclerView mRv;
@@ -109,7 +108,7 @@ public class FragmentLocation extends Fragment {
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    VideoActivityGesture.launch(activity, video.getVideoUrl());
+                    VideoActivity.launch(activity, video.getVideoUrl());
                 }
             });
         }
