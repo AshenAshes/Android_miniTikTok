@@ -94,7 +94,7 @@ public class FragmentRecommand extends Fragment {
             public void onPageRelease(boolean isNext, int position) {
                 Log.e(TAG, "释放位置:" + position + " 下一页:" + isNext);
                 if (isNext) {
-                    if(position < LIST_MAX_COUNT)
+                    if(position < mIndex.size())
                         playVideo(mIndex.get(position+1));
                     pauseVideo(mIndex.get(position));
                 } else {
@@ -108,7 +108,7 @@ public class FragmentRecommand extends Fragment {
             @Override
             public void onPageSelected(int position, boolean isbottom) {
                 Log.e(TAG, "选择位置:" + position + " 下一页:" + isbottom);
-                //playVideo(position);
+                playVideo(position);
             }
         });
     }
@@ -169,23 +169,23 @@ public class FragmentRecommand extends Fragment {
     }
 
     private void releaseVideo(int index){
-        View itemView = mRv.getChildAt(index);
-        final VideoPlayerIJK ijkPlayer = itemView.findViewById(R.id.ijkPlayer);
-        final ImageView pause = itemView.findViewById(R.id.pause);
+        RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(index);
+        final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
+        final ImageView pause = holder.itemView.findViewById(R.id.pause);
         ijkPlayer.stop();
         //animate?
     }
 
     private void pauseVideo(int index){
-        View itemView = mRv.getChildAt(index);
-        final VideoPlayerIJK ijkPlayer = itemView.findViewById(R.id.ijkPlayer);
-        final ImageView pause = itemView.findViewById(R.id.pause);
+        RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(index);
+        final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
+        final ImageView pause = holder.itemView.findViewById(R.id.pause);
         ijkPlayer.pause();
     }
 
     private void playVideo(int position) {
-        View itemView = mRv.getChildAt(position);
-        final VideoPlayerIJK ijkPlayer = itemView.findViewById(R.id.ijkPlayer);
+        RecyclerView.ViewHolder holder = mRv.findViewHolderForAdapterPosition(position);
+        final VideoPlayerIJK ijkPlayer = holder.itemView.findViewById(R.id.ijkPlayer);
         ijkPlayer.start();
     }
 
