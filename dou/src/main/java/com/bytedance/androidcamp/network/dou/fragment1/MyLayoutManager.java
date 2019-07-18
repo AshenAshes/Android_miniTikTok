@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+
 public class MyLayoutManager extends LinearLayoutManager implements RecyclerView.OnChildAttachStateChangeListener {
     private int mDrift;//位移，用来判断移动方向
     private PagerSnapHelper mPagerSnapHelper;
@@ -35,11 +37,11 @@ public class MyLayoutManager extends LinearLayoutManager implements RecyclerView
     public void onChildViewAttachedToWindow(@NonNull View view) {
         //播放视频操作 即将要播放的是上一个视频 还是下一个视频
         int position = getPosition(view);
-        if (0 == position) {
+//        if (0 == position) {
             if (mOnViewPagerListener != null) {
                 mOnViewPagerListener.onPageSelected(getPosition(view), false);
             }
-        }
+//        }
     }
 
     public void setOnViewPagerListener(OnViewPagerListener mOnViewPagerListener) {

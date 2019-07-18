@@ -13,13 +13,13 @@
             android:id="@+id/sv_videorecord"/>
 
         <!--<TextView-->
-            <!--android:id="@+id/tv_LOAD"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="视频上传中……"-->
-            <!--android:textSize="30sp"-->
-            <!--android:textColor="@android:color/holo_red_light"-->
-            <!--android:layout_centerInParent="true"/>-->
+        <!--android:id="@+id/tv_LOAD"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="视频上传中……"-->
+        <!--android:textSize="30sp"-->
+        <!--android:textColor="@android:color/holo_red_light"-->
+        <!--android:layout_centerInParent="true"/>-->
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_LOAD"
@@ -31,12 +31,12 @@
             app:lottie_rawRes="@raw/material_wave_loading"/>
 
         <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_start"-->
-            <!--android:text="START"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_centerHorizontal="true"/>-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/btn_start"-->
+        <!--android:text="START"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"/>-->
         <ImageView
             android:id="@+id/btn_start_out"
             android:scaleX="0.7"
@@ -60,20 +60,20 @@
             android:src="@drawable/camerabuttonin"/>
 
         <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_delete"-->
-            <!--android:text="DELETE"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"/>-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/btn_delete"-->
+        <!--android:text="DELETE"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"/>-->
         <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_refresh"-->
-            <!--android:text="RETURN"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_below="@+id/btn_delete"-->
-            <!--/>-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/btn_refresh"-->
+        <!--android:text="RETURN"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_below="@+id/btn_delete"-->
+        <!--/>-->
         <ImageView
             android:id="@+id/btn_refresh"
             android:layout_width="40dp"
@@ -95,12 +95,12 @@
             android:src="@drawable/delete"/>
 
         <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_upload"-->
-            <!--android:text="UPLOAD"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_below="@+id/btn_delete"/>-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/btn_upload"-->
+        <!--android:text="UPLOAD"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_below="@+id/btn_delete"/>-->
 
         <ImageView
             android:id="@+id/btn_upload"
@@ -141,10 +141,10 @@
         </LinearLayout>
 
         <!--<Button-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:id="@+id/btn_turn"-->
-            <!--android:text="翻转"/>-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:id="@+id/btn_turn"-->
+        <!--android:text="翻转"/>-->
         <ImageView
             android:id="@+id/btn_turn_out"
             android:layout_marginRight="10dp"
@@ -165,20 +165,8 @@
             android:id="@+id/text_btn_turn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-<<<<<<< HEAD
             android:layout_below="@+id/btn_turn_out"
             android:layout_marginRight="16dp"
-=======
-            android:id="@+id/btn_10s"
-            android:text="10s录制"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_delete"
-            android:text="DELETE"
->>>>>>> replace ijkplayer with videoview
             android:layout_alignParentRight="true"
             android:layout_marginTop="6dp"
             android:text="翻转"
@@ -186,14 +174,14 @@
 
 
         <!--<Button-->
-            <!--android:id="@+id/btn_flash"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginTop="78dp"-->
-            <!--android:layout_marginRight="109dp"-->
-            <!--android:text="开启闪光灯" />-->
+        <!--android:id="@+id/btn_flash"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginTop="78dp"-->
+        <!--android:layout_marginRight="109dp"-->
+        <!--android:text="开启闪光灯" />-->
         <ImageView
             android:id="@id/btn_flash"
             android:layout_width="40dp"
@@ -218,7 +206,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-<<<<<<< HEAD
             android:layout_marginRight="8dp"
             android:text="闪光灯"
             android:textColor="@color/white"
@@ -235,30 +222,5 @@
             android:layout_marginTop="20dp"
             android:src="@drawable/exit" />
 
-=======
-            android:id="@+id/btn_refresh"
-            android:text="RETURN"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/btn_delete"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_upload"
-            android:text="UPLOAD"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/btn_delete"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_picture"
-            android:text="视频模式"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_flash"
-            android:text="开启闪光灯"
-            android:layout_alignParentRight="true"/>
->>>>>>> replace ijkplayer with videoview
     </RelativeLayout>
 </RelativeLayout>

@@ -83,7 +83,7 @@
         android:src="@drawable/like" />
 
     <TextView
-        android:id="@+id/like_text"
+        android:id="@+id/like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -92,7 +92,7 @@
         android:layout_marginRight="15dp"
         android:layout_below="@+id/like_img"
         android:textColor="@color/white"
-        android:text="喜欢" />
+        android:text="" />
 
 
     <ImageView
@@ -103,7 +103,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
-        android:layout_below="@+id/like_text"
+        android:layout_below="@+id/like_count"
         android:src="@drawable/comment" />
 
     <TextView

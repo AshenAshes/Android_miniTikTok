@@ -5,9 +5,12 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -30,11 +33,15 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bytedance.androidcamp.network.dou.db.LikeContract;
+import com.bytedance.androidcamp.network.dou.db.LikeDbHelper;
 import com.bytedance.androidcamp.network.dou.gesture.BrightnessHelper;
 import com.bytedance.androidcamp.network.dou.gesture.VideoGestureRelativeLayout;
 import com.bytedance.androidcamp.network.dou.gesture.showChangeLayout;
 
 public class VideoActivity extends AppCompatActivity  implements VideoGestureRelativeLayout.VideoGestureListener{
+    String url;
+
     int mPlayingPos = 0;
     VideoView mVideoView;
     ProgressBar progressBar;
@@ -47,6 +54,7 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     SeekBar seekBar;
     RelativeLayout rl_bottom;
     TextView tvTime;
+    TextView likecount;
 
     RelativeLayout relativeLayout;
     ImageView doubleClickImg1;
@@ -60,6 +68,11 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
 
     int mVideoWidth = 0;
     int mVideoHeight = 0;
+
+    private SQLiteDatabase database;
+    private LikeDbHelper likeDbHelper;
+    private TextView textView;
+
 
     private final String TAG = "gesturetestm";
     private VideoGestureRelativeLayout ly_VG;
@@ -95,7 +108,10 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
         btnPortraitScreen = findViewById(R.id.btn_portrait);
         rl_bottom = (RelativeLayout) findViewById(R.id.include_play_bottom);
 
-        String url = getIntent().getStringExtra("url");
+        likeDbHelper=new LikeDbHelper(this);
+        database=likeDbHelper.getWritableDatabase();
+
+        url = getIntent().getStringExtra("url");
         mVideoView = findViewById(R.id.video_container);
         progressBar = findViewById(R.id.progress_bar);
         relativeLayout = findViewById(R.id.GestureView);
@@ -103,6 +119,7 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
         doubleClickImg2 = findViewById(R.id.doubleClickImg2);
         animator1 = AnimatorInflater.loadAnimator(getApplicationContext(),R.animator.doubleclick);
         animator2 = AnimatorInflater.loadAnimator(getApplicationContext(),R.animator.doubleclick);
+        likecount=findViewById(R.id.like_count);
 
         pause = findViewById(R.id.pause);
         pause.setVisibility(View.GONE);
@@ -447,6 +464,8 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
 
     @Override
     public void onDoubleTapGesture(MotionEvent e) {
+        int count=LoadLikeFromDatabase();
+        likecount.setText(count+"");
         animator1.setTarget(doubleClickImg1);
         animator1.start();
         animator2.setTarget(doubleClickImg2);
@@ -468,5 +487,38 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     @Override
     public void onEndFF_REW(MotionEvent e) {
 
+    }
+
+    private int LoadLikeFromDatabase(){
+        if(database==null){
+            return -1;
+        }else{
+            int result;
+            Cursor cursor=null;
+            try{
+                cursor=database.query(LikeContract.LikeNode.TABLE_NAME, null,"url like ?",
+                        new String[]{url},null,null,null);
+                if(cursor!=null && cursor.moveToNext()){
+                    result=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
+                }else{
+                    ContentValues values=new ContentValues();
+                    int count=(int)(100+Math.random()*200);
+                    values.put(LikeContract.LikeNode.COLUMN_COUNT,count);
+                    values.put(LikeContract.LikeNode.COLUMN_STATE,1);
+                    values.put(LikeContract.LikeNode.COLUMN_URL,url);
+                    long rowId=database.insert(LikeContract.LikeNode.TABLE_NAME,null,values);
+                    if(rowId!=-1){
+                        return count;
+                    }else{
+                        return -1;
+                    }
+                }
+            }finally {
+                if(cursor!=null){
+                    cursor.close();
+                }
+            }
+            return result;
+        }
     }
 }

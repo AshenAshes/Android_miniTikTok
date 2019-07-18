@@ -1,4 +1,4 @@
-package com.bytedance.androidcamp.network.dou;
+package com.bytedance.androidcamp.network.dou.db;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -7,21 +7,19 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -31,6 +29,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bytedance.androidcamp.network.dou.R;
 import com.bytedance.androidcamp.network.dou.gesture.BrightnessHelper;
 import com.bytedance.androidcamp.network.dou.gesture.VideoGestureRelativeLayout;
 import com.bytedance.androidcamp.network.dou.gesture.showChangeLayout;
@@ -75,6 +74,9 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
     boolean isPlayFinish = false;
     boolean isPrepare = false;
 
+    private SQLiteDatabase database;
+    private LikeDbHelper likeDbHelper;
+
     private final String TAG = "gesturetestm";
     private VideoGestureRelativeLayout ly_VG;
     private showChangeLayout scl;
@@ -96,7 +98,9 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_gesture);
+        setContentView(R.layout.activity_video_gesture);;
+        likeDbHelper=new LikeDbHelper(this);
+        database=likeDbHelper.getWritableDatabase();
         init();
         initIJKPlayer();
     }
@@ -368,8 +372,11 @@ public class VideoActivityGesture extends AppCompatActivity implements VideoGest
             ijkPlayer.release();
             ijkPlayer = null;
         }
-
         super.onDestroy();
+        database.close();
+        database=null;
+        likeDbHelper.close();
+        likeDbHelper=null;
     }
 
     private void videoScreenInit() {

@@ -1,25 +1,15 @@
 package com.bytedance.androidcamp.network.dou.fragment1;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.media.Image;
-import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,16 +17,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bytedance.androidcamp.network.dou.R;
-import com.bytedance.androidcamp.network.dou.VideoActivityGesture;
 import com.bytedance.androidcamp.network.dou.api.IMiniDouyinService;
 import com.bytedance.androidcamp.network.dou.model.Response_GET;
 import com.bytedance.androidcamp.network.dou.model.Video;
 import com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK;
-import com.bytedance.androidcamp.network.dou.player.VideoPlayerListener;
-import com.bytedance.androidcamp.network.lib.util.ImageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,17 +32,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
-import static com.bytedance.androidcamp.network.dou.VideoActivityGesture.MSG_REFRESH;
 
 public class FragmentRecommand extends Fragment {
     RecyclerView mRv;
     MyLayoutManager myLayoutManager;
     private Adapter adapter;
     private List<Video> mVideos = new ArrayList<>();
+    private List<Integer> mIndex = new ArrayList<>();
     View view;
 
     ImageView pause;
@@ -64,6 +49,7 @@ public class FragmentRecommand extends Fragment {
     ImageView doubleClickImg2;
     ProgressBar pbLoading;
 
+    int LIST_MAX_COUNT = 100;
     private boolean isPortrait = true;
     private boolean menu_visible = true;
     boolean isPlayFinish = false;
@@ -86,21 +72,12 @@ public class FragmentRecommand extends Fragment {
         mRv = view.findViewById(R.id.rv);
         myLayoutManager = new MyLayoutManager(getActivity(), OrientationHelper.VERTICAL, false);
         mRv.setLayoutManager(myLayoutManager);
-<<<<<<< HEAD
 
         fetchFeed(view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter();
         mRv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-=======
-
-        fetchFeed(view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter();
-        mRv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
->>>>>>> replace ijkplayer with videoview
         initListener();
         initIJKPlayer();
         return view;
@@ -116,23 +93,22 @@ public class FragmentRecommand extends Fragment {
             @Override
             public void onPageRelease(boolean isNext, int position) {
                 Log.e(TAG, "释放位置:" + position + " 下一页:" + isNext);
-                int index = 0;
                 if (isNext) {
-                    index = 0;
+                    if(position < LIST_MAX_COUNT)
+                        playVideo(mIndex.get(position+1));
+                    pauseVideo(mIndex.get(position));
                 } else {
-                    index = 1;
+                    if(position != 0)
+                        playVideo(mIndex.get(position-1));
+                    pauseVideo(mIndex.get(position));
                 }
-<<<<<<< HEAD
                 //releaseVideo(index);
-=======
-                releaseVideo(index);
->>>>>>> replace ijkplayer with videoview
             }
 
             @Override
-            public void onPageSelected(int position, boolean bottom) {
-                Log.e(TAG, "选择位置:" + position + " 下一页:" + bottom);
-                playVideo(0);
+            public void onPageSelected(int position, boolean isbottom) {
+                Log.e(TAG, "选择位置:" + position + " 下一页:" + isbottom);
+                //playVideo(position);
             }
         });
     }
@@ -158,7 +134,9 @@ public class FragmentRecommand extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             final long l = System.currentTimeMillis();
-            final int index = (int)( l % mVideos.size() );
+            Log.d("testtest",String.valueOf(mVideos.size()));
+            int index = (int)( l % mVideos.size() );
+            mIndex.add(index);
 
             final Video video = mVideos.get(index);
             ((MyViewHolder)holder).bind(FragmentRecommand.this.getActivity(),video);
@@ -198,47 +176,18 @@ public class FragmentRecommand extends Fragment {
         //animate?
     }
 
+    private void pauseVideo(int index){
+        View itemView = mRv.getChildAt(index);
+        final VideoPlayerIJK ijkPlayer = itemView.findViewById(R.id.ijkPlayer);
+        final ImageView pause = itemView.findViewById(R.id.pause);
+        ijkPlayer.pause();
+    }
+
     private void playVideo(int position) {
         View itemView = mRv.getChildAt(position);
         final VideoPlayerIJK ijkPlayer = itemView.findViewById(R.id.ijkPlayer);
         ijkPlayer.start();
-<<<<<<< HEAD
-=======
-
-//        ijkPlayer.setListener(new VideoPlayerListener(){
-//            @Override
-//            public void onBufferingUpdate(IMediaPlayer mp, int percent) {
-//            }
-//
-//            @Override
-//            public void onCompletion(IMediaPlayer mp) {
-//            }
-//
-//            @Override
-//            public boolean onError(IMediaPlayer mp, int what, int extra) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onPrepared(IMediaPlayer mp) {
-//            }
-//
-//            @Override
-//            public void onSeekComplete(IMediaPlayer mp) {
-//            }
-//
-//            @Override
-//            public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
-//            }
-//        });
->>>>>>> replace ijkplayer with videoview
     }
-
 
     public void fetchFeed(View view) {
         Call<Response_GET> call=miniDouyinService.getVideo();
@@ -262,7 +211,6 @@ public class FragmentRecommand extends Fragment {
             }
         });
     }
-<<<<<<< HEAD
 
     @Override
     public void onResume() {
@@ -271,10 +219,6 @@ public class FragmentRecommand extends Fragment {
     }
 
     //    private void videoScreenInit() {
-=======
-//
-//    private void videoScreenInit() {
->>>>>>> replace ijkplayer with videoview
 //        if (isPortrait) {
 //            portrait();
 //        } else {

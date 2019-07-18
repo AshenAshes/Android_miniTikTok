@@ -77,7 +77,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     private Boolean setFlash = false;
     private Boolean set10s = false;
     private Boolean setPicture = false;
-<<<<<<< HEAD
     private ImageView btnTurn;
     private Button btn10s;
     private ImageView btnRefrash;
@@ -87,15 +86,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
     private ImageView btnDelete;
     private Button btnPicture;
     private ImageView btnUpload;
-=======
-    private Button btnTurn;
-    private Button btn10s;
-    private Button btnRefrash;
-    private Button btnFlash;
-    private Button btnDelete;
-    private Button btnPicture;
-    private Button btnUpload;
->>>>>>> replace ijkplayer with videoview
     private int useHeight, useWidth;
     private boolean havePermission = false;
     private Camera.Size mSize;
@@ -153,11 +143,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
             @Override
             public void onClick(View view) {
                 if (set10s == false) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
                     btnPicture.setVisibility(View.INVISIBLE);
->>>>>>> replace ijkplayer with videoview
                     btnPicture.setTextColor(Color.WHITE);
                     btn10s.setTextColor(Color.RED);
                     btn10s.setText("取消10s录制");
@@ -166,34 +152,22 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                     btnPicture.setVisibility(View.VISIBLE);
                     btnPicture.setTextColor(Color.RED);
                     btn10s.setTextColor(Color.WHITE);
-=======
-                    btn10s.setText("取消10s录制");
-                    set10s = true;
-                } else {
->>>>>>> replace ijkplayer with videoview
                     btn10s.setText("10s录制");
                     set10s = false;
                 }
             }
         });
-<<<<<<< HEAD
 
-=======
->>>>>>> replace ijkplayer with videoview
         btnRefrash = findViewById(R.id.btn_refresh);
         btnRefrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-<<<<<<< HEAD
                 btnExit.setVisibility(View.VISIBLE);
-=======
->>>>>>> replace ijkplayer with videoview
                 Intent intent = new Intent(MainActivity3.this, MainActivity3.class);
                 startActivity(intent);
             }
         });
         btnRefrash.setVisibility(View.INVISIBLE);
-<<<<<<< HEAD
 
         btnExit = findViewById(R.id.btn_exit);
         btnExit.setOnClickListener(new View.OnClickListener() {
@@ -204,8 +178,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
             }
         });
 
-=======
->>>>>>> replace ijkplayer with videoview
         btnPicture = findViewById(R.id.btn_picture);
         btnPicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,10 +193,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                 }
             }
         });
-<<<<<<< HEAD
 
-=======
->>>>>>> replace ijkplayer with videoview
         btnStart = findViewById(R.id.btn_start);
         animator.setTarget(btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -238,17 +207,10 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                         btn10s.setVisibility(View.INVISIBLE);
                         btnDelete.setVisibility(View.VISIBLE);
                         btnRefrash.setVisibility(View.VISIBLE);
-<<<<<<< HEAD
                         btnExit.setVisibility(View.INVISIBLE);
                         btnStart.setVisibility(View.INVISIBLE);
                         btnFlash.setVisibility(View.INVISIBLE);
                     } else {
-=======
-                        btnStart.setVisibility(View.INVISIBLE);
-                        btnFlash.setVisibility(View.INVISIBLE);
-                    } else {
-
->>>>>>> replace ijkplayer with videoview
                         initMediaRecord();
                         animator.start();
                         if (set10s == true) {
@@ -262,11 +224,7 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                             }, 10000);
                         }
                         stap = false;
-<<<<<<< HEAD
                         //btnStart.setText("STOP");
-=======
-                        btnStart.setText("STOP");
->>>>>>> replace ijkplayer with videoview
                     }
                 } else {
                     animator.cancel();
@@ -321,29 +279,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
             }
         });
 
-<<<<<<< HEAD
-=======
-        btnFlash = findViewById(R.id.btn_flash);
-        btnFlash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (setFlash == false) {
-                    setFlash = true;
-                    btnFlash.setText("关闭闪光灯");
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    mCamera.setParameters(parameters);
-                } else {
-                    setFlash = false;
-                    btnFlash.setText("开启闪光灯");
-                    Camera.Parameters parameters = mCamera.getParameters();
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(parameters);
-                }
-            }
-        });
-
->>>>>>> replace ijkplayer with videoview
         btnTurn = findViewById(R.id.btn_turn);
         btnTurn.setOnClickListener(new View.OnClickListener() {
             @Override

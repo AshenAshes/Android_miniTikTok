@@ -13,15 +13,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-<<<<<<< HEAD
-        android:layout_height="80dp"
-<<<<<<< HEAD
-=======
-        app:layout_scrollFlags="scroll|enterAlways"
->>>>>>> replace ijkplayer with videoview
-=======
         android:layout_height="100dp"
->>>>>>> replace ijkplayer with videoview
         app:tabBackground="@null"
         app:tabGravity="center"
         app:tabIndicatorColor="@null"
