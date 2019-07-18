@@ -38,9 +38,13 @@ import com.bytedance.androidcamp.network.dou.db.LikeDbHelper;
 import com.bytedance.androidcamp.network.dou.gesture.BrightnessHelper;
 import com.bytedance.androidcamp.network.dou.gesture.VideoGestureRelativeLayout;
 import com.bytedance.androidcamp.network.dou.gesture.showChangeLayout;
+import com.bytedance.androidcamp.network.dou.model.Like;
+
+import java.util.Date;
 
 public class VideoActivity extends AppCompatActivity  implements VideoGestureRelativeLayout.VideoGestureListener{
     String url;
+    String name;
 
     int mPlayingPos = 0;
     VideoView mVideoView;
@@ -51,6 +55,8 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     ImageView btnPause;
     ImageView btnPlay;
     ImageView pause;
+    ImageView imgLike;
+    ImageView imgRedLike;
     SeekBar seekBar;
     RelativeLayout rl_bottom;
     TextView tvTime;
@@ -73,7 +79,6 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     private LikeDbHelper likeDbHelper;
     private TextView textView;
 
-
     private final String TAG = "gesturetestm";
     private VideoGestureRelativeLayout ly_VG;
     private showChangeLayout scl;
@@ -85,13 +90,14 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     private float brightness = 1;
     private Window mWindow;
     private WindowManager.LayoutParams mLayoutParams;
-
+    private Like like;
     private Handler handler;
     public static final int MSG_REFRESH = 1001;
 
-    public static void launch(Activity activity, String url) {
+    public static void launch(Activity activity, String url, String name) {
         Intent intent = new Intent(activity, VideoActivity.class);
         intent.putExtra("url", url);
+        intent.putExtra("name",name);
         activity.startActivity(intent);
     }
 
@@ -112,6 +118,7 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
         database=likeDbHelper.getWritableDatabase();
 
         url = getIntent().getStringExtra("url");
+        name=getIntent().getStringExtra("name");
         mVideoView = findViewById(R.id.video_container);
         progressBar = findViewById(R.id.progress_bar);
         relativeLayout = findViewById(R.id.GestureView);
@@ -120,17 +127,14 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
         animator1 = AnimatorInflater.loadAnimator(getApplicationContext(),R.animator.doubleclick);
         animator2 = AnimatorInflater.loadAnimator(getApplicationContext(),R.animator.doubleclick);
         likecount=findViewById(R.id.like_count);
+        imgLike=findViewById(R.id.like_img);
+        imgRedLike=findViewById(R.id.like_red_img);
 
         pause = findViewById(R.id.pause);
         pause.setVisibility(View.GONE);
         rl_bottom.setVisibility(View.INVISIBLE);
 
         tvTime = findViewById(R.id.tv_time);
-//        tvLoadMsg = findViewById(R.id.tv_load_msg);
-//        pbLoading = findViewById(R.id.pb_loading);
-//        rlLoading = findViewById(R.id.rl_loading);
-//        tvPlayEnd = findViewById(R.id.tv_play_end);
-//        rlPlayer = findViewById(R.id.rl_player);
 
         ly_VG = (VideoGestureRelativeLayout) findViewById(R.id.GestureView);
         ly_VG.setVideoGestureListener(this);
@@ -143,6 +147,19 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
 
         //初始化亮度调节
         mBrightnessHelper = new BrightnessHelper(this);
+
+        //初始化点赞数
+        int count=LoadCountFromDatabase();
+        likecount.setText(count+"");
+        like=LoadLikeFromDatabase();
+        if(like.getState()==1){
+            imgRedLike.setVisibility(View.VISIBLE);
+            imgLike.setVisibility(View.INVISIBLE);
+        }
+        else{
+            imgRedLike.setVisibility(View.INVISIBLE);
+            imgLike.setVisibility(View.VISIBLE);
+        }
 
         //下面这是设置当前APP亮度的方法配置
         mWindow = getWindow();
@@ -341,12 +358,25 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     @Override
     protected void onResume() {
         if (mPlayingPos > 0) {
-        //    mVideoView.start();
+            //    mVideoView.start();
             progressBar.setVisibility(View.VISIBLE);
             mVideoView.seekTo(mPlayingPos);
             mPlayingPos = 0;
         }
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mVideoView!=null)
+        {
+            mVideoView=null;
+        }
+        database.close();
+        database=null;
+        likeDbHelper.close();
+        likeDbHelper=null;
     }
 
     @Override
@@ -464,12 +494,24 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
 
     @Override
     public void onDoubleTapGesture(MotionEvent e) {
-        int count=LoadLikeFromDatabase();
-        likecount.setText(count+"");
+        Boolean flag=updateLike(like);
+        if(flag==true){
+            like=LoadLikeFromDatabase();
+            int count=like.getCount();
+            likecount.setText(count+"");
+        }
         animator1.setTarget(doubleClickImg1);
         animator1.start();
         animator2.setTarget(doubleClickImg2);
         animator2.start();
+        if(imgLike.getVisibility()==View.VISIBLE){
+            imgLike.setVisibility(View.INVISIBLE);
+            imgRedLike.setVisibility(View.VISIBLE);
+        }
+        else{
+            imgLike.setVisibility(View.VISIBLE);
+            imgRedLike.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -488,28 +530,91 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
     public void onEndFF_REW(MotionEvent e) {
 
     }
-
-    private int LoadLikeFromDatabase(){
+    private Boolean updateLike(Like like){
         if(database==null){
-            return -1;
+            return false;
         }else{
-            int result;
+            ContentValues values=new ContentValues();
+            if(like.state==1){
+                values.put(LikeContract.LikeNode.COLUMN_STATE,0);
+                values.put(LikeContract.LikeNode.COLUMN_COUNT,like.getCount()-1);
+            }else{
+                values.put(LikeContract.LikeNode.COLUMN_STATE,1);
+                values.put(LikeContract.LikeNode.COLUMN_COUNT,like.getCount()+1);
+                values.put(LikeContract.LikeNode.COLUMN_DATE,System.currentTimeMillis());
+            }
+            int rows=database.update(LikeContract.LikeNode.TABLE_NAME,values,
+                    LikeContract.LikeNode._ID+"=?",new String[]{String.valueOf(like.id)});
+            if(rows>0){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+
+    private Like LoadLikeFromDatabase(){
+        Like like;
+        if(database==null){
+            return null;
+        }else{
             Cursor cursor=null;
             try{
                 cursor=database.query(LikeContract.LikeNode.TABLE_NAME, null,"url like ?",
                         new String[]{url},null,null,null);
+
                 if(cursor!=null && cursor.moveToNext()){
-                    result=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
+                    long id=cursor.getLong(cursor.getColumnIndex(LikeContract.LikeNode._ID));
+                    int count=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
+                    int state=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_STATE));
+                    String name=cursor.getString(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_NAME));
+                    long date=cursor.getLong(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_DATE));
+                    String url=cursor.getString(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_URL));
+                    like=new Like(id);
+                    like.setDate(new Date(date));
+                    like.setName(name);
+                    like.setCount(count);
+                    like.setState(state);
+                    like.setUrl(url);
+                }else{
+                    return null;
+                }
+            }finally {
+                if(cursor!=null){
+                    cursor.close();
+                }
+            }
+        }
+        return like;
+    }
+
+    private int LoadCountFromDatabase(){
+        int result =-1;
+        if(database==null){
+            Log.d("database", "LoadCountFromDatabase: ");
+            return -1;
+        }else{
+            Cursor cursor=null;
+            try{
+                cursor=database.query(LikeContract.LikeNode.TABLE_NAME, null,"url like ?",
+                        new String[]{url},null,null,null);
+
+                if(cursor!=null && cursor.moveToNext()){
+                    int count=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
                 }else{
                     ContentValues values=new ContentValues();
                     int count=(int)(100+Math.random()*200);
                     values.put(LikeContract.LikeNode.COLUMN_COUNT,count);
-                    values.put(LikeContract.LikeNode.COLUMN_STATE,1);
+                    values.put(LikeContract.LikeNode.COLUMN_STATE,0);
                     values.put(LikeContract.LikeNode.COLUMN_URL,url);
+                    values.put(LikeContract.LikeNode.COLUMN_DATE,System.currentTimeMillis());
+                    values.put(LikeContract.LikeNode.COLUMN_NAME,name);
                     long rowId=database.insert(LikeContract.LikeNode.TABLE_NAME,null,values);
                     if(rowId!=-1){
-                        return count;
+                        result=count;
                     }else{
+                        Log.d("database", "LoadCountFromDatabase2: ");
                         return -1;
                     }
                 }
@@ -518,7 +623,9 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
                     cursor.close();
                 }
             }
-            return result;
         }
+        return result;
     }
 }
+
+

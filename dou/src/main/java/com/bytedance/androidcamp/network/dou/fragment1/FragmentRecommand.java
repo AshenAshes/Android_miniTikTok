@@ -1,44 +1,54 @@
 package com.bytedance.androidcamp.network.dou.fragment1;
 
+import android.animation.Animator;
 import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.OrientationHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bytedance.androidcamp.network.dou.R;
 import com.bytedance.androidcamp.network.dou.api.IMiniDouyinService;
+import com.bytedance.androidcamp.network.dou.db.LikeContract;
+import com.bytedance.androidcamp.network.dou.db.LikeDbHelper;
+import com.bytedance.androidcamp.network.dou.model.Like;
 import com.bytedance.androidcamp.network.dou.model.Response_GET;
 import com.bytedance.androidcamp.network.dou.model.Video;
 import com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK;
-
+import com.bytedance.androidcamp.network.dou.player.VideoPlayerListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class FragmentRecommand extends Fragment {
     RecyclerView mRv;
     MyLayoutManager myLayoutManager;
+    LinearLayoutManager layoutManager;
+    PagerSnapHelper snapHelper;
     private Adapter adapter;
     private List<Video> mVideos = new ArrayList<>();
     private List<Integer> mIndex = new ArrayList<>();
@@ -47,6 +57,8 @@ public class FragmentRecommand extends Fragment {
     ImageView pause;
     ImageView doubleClickImg1;
     ImageView doubleClickImg2;
+    Animator animator1;
+    Animator animator2;
     ProgressBar pbLoading;
 
     int LIST_MAX_COUNT = 100;
@@ -57,54 +69,43 @@ public class FragmentRecommand extends Fragment {
     int mVideoWidth = 0;
     int mVideoHeight = 0;
     RelativeLayout rlLoading;
+    int screenHeight = 0;
+
+    private SQLiteDatabase database;
+    private LikeDbHelper likeDbHelper;
 
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(IMiniDouyinService.HOST)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
-    private IMiniDouyinService miniDouyinService  = retrofit.create(IMiniDouyinService.class);
+    private IMiniDouyinService miniDouyinService = retrofit.create(IMiniDouyinService.class);
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view=inflater.inflate(R.layout.fragment1_recommand,container,false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment1_recommand, container, false);
 
         mRv = view.findViewById(R.id.rv);
-        myLayoutManager = new MyLayoutManager(getActivity(), OrientationHelper.VERTICAL, false);
-        mRv.setLayoutManager(myLayoutManager);
-
-        fetchFeed(view);
+        screenHeight = getActivity().getResources().getDisplayMetrics().heightPixels;
+        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRv);
+        mRv.setLayoutManager(layoutManager);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter();
         mRv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
-        initListener();
+        likeDbHelper=new LikeDbHelper(getActivity());
+        database=likeDbHelper.getWritableDatabase();
+
         initIJKPlayer();
+
+        fetchFeed();
         return view;
     }
 
-    private void initListener() {
-        myLayoutManager.setOnViewPagerListener(new OnViewPagerListener() {
-            @Override
-            public void onInitComplete() {
-
-            }
-
-            @Override
-            public void onPageRelease(boolean isNext, int position) {
-                Log.e(TAG, "释放位置:" + position + " 下一页:" + isNext);
-                //releaseVideo(index);
-            }
-
-            @Override
-            public void onPageSelected(View v, int position, boolean isbottom) {
-                Log.e(TAG, "选择位置:" + position + " 下一页:" + isbottom);
-                playVideo(v,position);
-            }
-        });
-    }
-
-    private void initIJKPlayer(){
+    private void initIJKPlayer() {
         //加载native库
         try {
             IjkMediaPlayer.loadLibrariesOnce(null);
@@ -114,97 +115,184 @@ public class FragmentRecommand extends Fragment {
         }
     }
 
-    public class RecyclerViewAdapter extends RecyclerView.Adapter{
+    public class RecyclerViewAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new MyViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.rv_item_recommend,parent,false));
+                    .inflate(R.layout.rv_item_recommend, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             final long l = System.currentTimeMillis();
-            Log.d("testtest",String.valueOf(mVideos.size()));
-            int index = (int)( l % mVideos.size() );
+            Log.d("testtest", String.valueOf(mVideos.size()));
+            int index = (int) (l % mVideos.size());
             mIndex.add(index);
 
             final Video video = mVideos.get(index);
-            ((MyViewHolder)holder).bind(FragmentRecommand.this.getActivity(),video);
+            Log.i("Video", "bind " + position);
+            holder.bind(FragmentRecommand.this.getActivity(), video);
         }
 
         @Override
         public int getItemCount() {
             return mVideos.size();
         }
+
+        @Override
+        public void onViewAttachedToWindow(@NonNull MyViewHolder holder) {
+            super.onViewAttachedToWindow(holder);
+            Log.i("Video", "attach " + holder.getAdapterPosition());
+            holder.attach();
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull MyViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            Log.i("Video", "detach " + holder.getAdapterPosition());
+            holder.detach();
+        }
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private VideoPlayerIJK ijkPlayer;
         private ImageView pause;
+        private ImageView imgLike;
+        private ImageView imgRedLike;
+        private TextView likeText;
+        private boolean likeState=false;
 
         private boolean isPlayFinish = false;
+        private boolean isAttach = false;
         private boolean isPrepare = false;
 
-        public MyViewHolder(@NonNull View Itemview){
+        private Video video;
+
+        public MyViewHolder(@NonNull View Itemview) {
             super(Itemview);
-            ijkPlayer=Itemview.findViewById(R.id.ijkPlayer);
-            pause=Itemview.findViewById(R.id.pause);
+            ijkPlayer = Itemview.findViewById(R.id.ijkPlayer);
+            pause = Itemview.findViewById(R.id.pause);
+            imgLike=Itemview.findViewById(R.id.like_img);
+            imgRedLike=Itemview.findViewById(R.id.like_red_img);
+            likeText=Itemview.findViewById(R.id.like_count);
         }
 
         public void bind(final Activity activity, final Video video) {
-            String url = video.getVideoUrl();
-            url=url.replaceFirst("https","http");
-            ijkPlayer.setVideoPath(url);
+            this.video = video;
+            pause.setVisibility(View.GONE);
+            imgRedLike.setVisibility(View.INVISIBLE);
+            imgLike.setVisibility(View.VISIBLE);
+            ijkPlayer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (pause.getVisibility() == View.VISIBLE) {
+                        if (isPlayFinish) {
+                            isPlayFinish = false;
+                            ijkPlayer.seekTo(0);
+                        }
+                        tryToPlay();
+                        pause.setVisibility(View.GONE);
+                    } else {
+                        if (ijkPlayer.isPlaying()) {
+                            ijkPlayer.pause();
+                        }
+                        pause.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+            imgLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(likeState==true){
+                        likeState=false;
+                        likeText.setTextColor(Color.WHITE);
+                        imgRedLike.setVisibility(View.INVISIBLE);
+                        imgLike.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        likeState=true;
+                        likeText.setTextColor(Color.RED);
+                        imgRedLike.setVisibility(View.VISIBLE);
+                        imgLike.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+            imgRedLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(likeState==true){
+                        likeState=false;
+                        likeText.setTextColor(Color.WHITE);
+                        imgRedLike.setVisibility(View.INVISIBLE);
+                        imgLike.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        likeState=true;
+                        likeText.setTextColor(Color.RED);
+                        imgRedLike.setVisibility(View.VISIBLE);
+                        imgLike.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
         }
-    }
 
-    private void releaseVideo(View v,int index){
-        final VideoPlayerIJK ijkPlayer = v.findViewById(R.id.ijkPlayer);
-        ijkPlayer.stop();
-        //animate?
-    }
-
-    private void pauseVideo(View v,int index){
-        final VideoPlayerIJK ijkPlayer = v.findViewById(R.id.ijkPlayer);
-        ijkPlayer.pause();
-    }
-
-    public static RecyclerView.ViewHolder getHolder(RecyclerView rv,int index){
-        if(null == rv || null == rv.getAdapter() || rv.getAdapter().getItemCount() == 0)
-            return null;
-        int count = rv.getAdapter().getItemCount();
-        if(index < 0 || index > count -1)
-            return null;
-        RecyclerView.ViewHolder holder = rv.findViewHolderForAdapterPosition(index);
-        if(holder == null){
-            RecyclerView.RecycledViewPool pool = rv.getRecycledViewPool();
-            int type=0;
-            int recyclerViewCount = pool.getRecycledViewCount(type);
-            holder = pool.getRecycledView(type);
-            try{
-                pool.putRecycledView(holder);
-            }catch (Exception e){
-
+        private void tryToPlay() {
+            if (isAttach && isPrepare) {
+                ijkPlayer.start();
             }
         }
-        return holder;
+
+        public void attach() {
+            isAttach = true;
+            String url = video.getVideoUrl();
+            url = url.replaceFirst("https", "http");
+            ijkPlayer.setVideoPath(url);
+            ijkPlayer.setListener(new VideoPlayerListener() {
+                @Override
+                public void onPrepared(IMediaPlayer iMediaPlayer) {
+                    super.onPrepared(iMediaPlayer);
+                    isPrepare = true;
+                    ijkPlayer.seekTo(0);
+                    ijkPlayer.pause();
+                    tryToPlay();
+                }
+
+                @Override
+                public void onCompletion(IMediaPlayer iMediaPlayer) {
+                    super.onCompletion(iMediaPlayer);
+                    isPlayFinish = true;
+                    pause.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+                    return super.onError(iMediaPlayer, i, i1);
+                }
+            });
+
+        }
+
+        public void detach() {
+            isAttach = false;
+            isPrepare = false;
+            isPlayFinish = false;
+            ijkPlayer.pause();
+            ijkPlayer.stop();
+            ijkPlayer.release();
+            pause.setVisibility(View.GONE);
+        }
     }
 
-    private void playVideo(View v,int position) {
-        final VideoPlayerIJK ijkPlayer = v.findViewById(R.id.ijkPlayer);
-        ijkPlayer.start();
-    }
-
-    public void fetchFeed(View view) {
-        Call<Response_GET> call=miniDouyinService.getVideo();
-        call.enqueue(new Callback<Response_GET>(){
+    public void fetchFeed() {
+        Call<Response_GET> call = miniDouyinService.getVideo();
+        call.enqueue(new Callback<Response_GET>() {
             @Override
             public void onResponse(Call<Response_GET> call, Response<Response_GET> response) {
-                if(response.body() != null && response.isSuccessful()){
+                if (response.body() != null && response.isSuccessful()) {
                     List<Video> temp = response.body().getVideos();
-                    for(Video i :temp){
-                        if(i.getStudentId().equals("3170106666")){
+                    for (Video i : temp) {
+                        if (i.getStudentId().equals("3170106666")) {
                             mVideos.add(i);
                         }
                     }
@@ -225,62 +313,76 @@ public class FragmentRecommand extends Fragment {
         mRv.getAdapter().notifyDataSetChanged();
     }
 
-    //    private void videoScreenInit() {
-//        if (isPortrait) {
-//            portrait();
-//        } else {
-//            lanscape();
-//        }
-//    }
-//
-//    private void toggle() {
-//        if (!isPortrait) {
-//            portrait();
-//        } else {
-//            lanscape();
-//        }
-//    }
-//
-//    private void portrait() {
-//        ijkPlayer.pause();
-//        isPortrait = true;
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//
-//        WindowManager wm = (WindowManager) this
-//                .getSystemService(Context.WINDOW_SERVICE);
-//        float width = wm.getDefaultDisplay().getWidth();
-//        float height = wm.getDefaultDisplay().getHeight();
-//        float ratio = width / height;
-//        if (width < height) {
-//            ratio = height/width;
-//        }
-//
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlPlayer.getLayoutParams();
-//        layoutParams.height = (int) (mVideoHeight * ratio);
-//        layoutParams.width = (int) width;
-//        rlPlayer.setLayoutParams(layoutParams);
-//        btnSetting.setText(getResources().getString(R.string.fullScreek));
-//        ijkPlayer.start();
-//    }
-//
-//    private void lanscape() {
-//        ijkPlayer.pause();
-//        isPortrait = false;
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//
-//        WindowManager wm = (WindowManager) this
-//                .getSystemService(Context.WINDOW_SERVICE);
-//        float width = wm.getDefaultDisplay().getWidth();
-//        float height = wm.getDefaultDisplay().getHeight();
-//        float ratio = width / height;
-//
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlPlayer.getLayoutParams();
-//
-//        layoutParams.height = (int) RelativeLayout.LayoutParams.MATCH_PARENT;
-//        layoutParams.width = (int) RelativeLayout.LayoutParams.MATCH_PARENT;
-//        rlPlayer.setLayoutParams(layoutParams);
-//        btnSetting.setText(getResources().getString(R.string.smallScreen));
-//        ijkPlayer.start();
-//    }
+    private Like LoadLikeFromDatabase(String url_in){
+        Like like;
+        if(database==null){
+            return null;
+        }else{
+            Cursor cursor=null;
+            try{
+                cursor=database.query(LikeContract.LikeNode.TABLE_NAME, null,"url like ?",
+                        new String[]{url_in},null,null,null);
 
+                if(cursor!=null && cursor.moveToNext()){
+                    long id=cursor.getLong(cursor.getColumnIndex(LikeContract.LikeNode._ID));
+                    int count=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
+                    int state=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_STATE));
+                    String name=cursor.getString(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_NAME));
+                    long date=cursor.getLong(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_DATE));
+                    String url=cursor.getString(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_URL));
+                    like=new Like(id);
+                    like.setDate(new Date(date));
+                    like.setName(name);
+                    like.setCount(count);
+                    like.setState(state);
+                    like.setUrl(url);
+                }else{
+                    return null;
+                }
+            }finally {
+                if(cursor!=null){
+                    cursor.close();
+                }
+            }
+        }
+        return like;
+    }
+
+    private int LoadCountFromDatabase(String url, String name){
+        int result =-1;
+        if(database==null){
+            Log.d("database", "LoadCountFromDatabase: ");
+            return -1;
+        }else{
+            Cursor cursor=null;
+            try{
+                cursor=database.query(LikeContract.LikeNode.TABLE_NAME, null,"url like ?",
+                        new String[]{url},null,null,null);
+
+                if(cursor!=null && cursor.moveToNext()){
+                    int count=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
+                }else{
+                    ContentValues values=new ContentValues();
+                    int count=(int)(100+Math.random()*200);
+                    values.put(LikeContract.LikeNode.COLUMN_COUNT,count);
+                    values.put(LikeContract.LikeNode.COLUMN_STATE,0);
+                    values.put(LikeContract.LikeNode.COLUMN_URL,url);
+                    values.put(LikeContract.LikeNode.COLUMN_DATE,System.currentTimeMillis());
+                    values.put(LikeContract.LikeNode.COLUMN_NAME,name);
+                    long rowId=database.insert(LikeContract.LikeNode.TABLE_NAME,null,values);
+                    if(rowId!=-1){
+                        result=count;
+                    }else{
+                        Log.d("database", "LoadCountFromDatabase2: ");
+                        return -1;
+                    }
+                }
+            }finally {
+                if(cursor!=null){
+                    cursor.close();
+                }
+            }
+        }
+        return result;
+    }
 }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.bytedance.androidcamp.network.dou.finalclass.DoubleBack;
@@ -17,46 +18,11 @@ import com.bytedance.androidcamp.network.dou.finalclass.DoubleBack;
 public class MainActivity5 extends AppCompatActivity {
     DoubleBack doubleBack=new DoubleBack();
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
-//            View decorView = getWindow().getDecorView();
-//            decorView.setSystemUiVisibility(
-////                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-////                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-////                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-////                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-////                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-////                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//            );
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//        }
-//    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main5);
+        Button button = findViewById(R.id.button);
 
         bindActivity(R.id.bottomButton1, MainActivity1.class);
         bindActivity(R.id.bottomButton2, MainActivity2.class);
@@ -68,6 +34,13 @@ public class MainActivity5 extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.pageBackground));
         }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
     }
 
     private void bindActivity(final int btnId, final Class<?> activityClass){

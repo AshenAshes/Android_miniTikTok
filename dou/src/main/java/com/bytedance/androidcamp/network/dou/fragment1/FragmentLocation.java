@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,10 +106,11 @@ public class FragmentLocation extends Fragment {
         public void bind(final Activity activity, final Video video) {
             ImageHelper.displayWebImage(video.getImageUrl(), img);
             text.setText(video.getUserName());
+            Log.d("getName",video.getUserName());
             img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    VideoActivity.launch(activity, video.getVideoUrl());
+                    VideoActivity.launch(activity, video.getVideoUrl(), video.getUserName());
                 }
             });
         }

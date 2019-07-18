@@ -2,19 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/pageBackground">
 
-    <!--<androidx.viewpager.widget.ViewPager-->
-    <!--android:id="@+id/view_pager"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-
-    <!--<com.google.android.material.tabs.TabLayout-->
-    <!--android:id="@+id/tab_layout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="40dp" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <ImageView
+        android:id="@+id/mybackground1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/mybackground1"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+    <ImageView
+        android:id="@+id/mybackground2"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/mybackground2"/>
+    </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLay"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_alignParentBottom="true"
@@ -63,4 +78,29 @@
             android:layout_weight="1.5"
             android:text="我"/>
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/linearLay"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="@color/black"
+        android:elevation="6dp"
+        android:src="@drawable/plus"
+        app:rippleColor="@color/black"
+        android:outlineSpotShadowColor="@color/grey"
+        android:outlineAmbientShadowColor="@color/grey" />
+
+    <ImageView
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/head"/>
+
+
 </RelativeLayout>

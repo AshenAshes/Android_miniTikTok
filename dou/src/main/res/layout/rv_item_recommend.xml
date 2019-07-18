@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    >
+
+    <com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK
+        android:id="@+id/ijkPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+    </com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK>
 
     <ImageView
         android:id="@+id/pause"
@@ -11,12 +20,81 @@
         android:layout_centerInParent="true"
         android:scaleX="0.4"
         android:scaleY="0.4"
-        android:src="@drawable/pause" />
+        android:src="@drawable/pause"
+        />
 
-    <com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK
-        android:id="@+id/ijkPlayer"
+
+    <ImageView
+        android:id="@+id/like_img"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </com.bytedance.androidcamp.network.dou.player.VideoPlayerIJK>
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/like" />
 
+    <ImageView
+        android:id="@+id/like_red_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/reallike" />
+
+    <TextView
+        android:id="@+id/like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/like_img"
+        android:textColor="@color/white"
+        android:text="点赞" />
+
+    <ImageView
+        android:id="@+id/comment_img"
+        android:layout_width="30dp"
+        android:layout_height="26dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/like_count"
+        android:src="@drawable/comment" />
+
+    <TextView
+        android:id="@+id/comment_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/comment_img"
+        android:textColor="@color/white"
+        android:text="评论" />
+
+    <ImageView
+        android:id="@+id/share_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/comment_text"
+        android:src="@drawable/share" />
+
+    <TextView
+        android:id="@+id/share_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/share_img"
+        android:textColor="@color/white"
+        android:text="分享" />
 </RelativeLayout>

@@ -11,6 +11,8 @@ public class LikeContract {
         public static final String COLUMN_COUNT="count";
         public static final String COLUMN_STATE="state";
         public static final String COLUMN_URL="url";
+        public static final String COLUMN_DATE="date";
+        public static final String COLUMN_NAME="name";
     }
 
 }

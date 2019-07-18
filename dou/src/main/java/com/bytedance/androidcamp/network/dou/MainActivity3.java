@@ -203,7 +203,6 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
                     btn10s.setVisibility(View.INVISIBLE);
                     if (setPicture == true) {
                         takePicture();
-                        btnTurn.setVisibility(View.INVISIBLE);
                         btn10s.setVisibility(View.INVISIBLE);
                         btnDelete.setVisibility(View.VISIBLE);
                         btnRefrash.setVisibility(View.VISIBLE);
@@ -290,6 +289,11 @@ public class MainActivity3 extends AppCompatActivity implements SurfaceHolder.Ca
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(setPicture==true){
+                    deletePath=imagepath;
+                }else{
+                    deletePath=videopath;
+                }
                 File file = new File(deletePath);
                 if (file.isFile() && file.exists()) {
                     Boolean ifDelete = file.delete();
