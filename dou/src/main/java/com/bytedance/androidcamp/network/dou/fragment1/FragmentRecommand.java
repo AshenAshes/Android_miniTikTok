@@ -86,12 +86,21 @@ public class FragmentRecommand extends Fragment {
         mRv = view.findViewById(R.id.rv);
         myLayoutManager = new MyLayoutManager(getActivity(), OrientationHelper.VERTICAL, false);
         mRv.setLayoutManager(myLayoutManager);
+<<<<<<< HEAD
 
         fetchFeed(view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter();
         mRv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+=======
+
+        fetchFeed(view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter();
+        mRv.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+>>>>>>> replace ijkplayer with videoview
         initListener();
         initIJKPlayer();
         return view;
@@ -113,7 +122,11 @@ public class FragmentRecommand extends Fragment {
                 } else {
                     index = 1;
                 }
+<<<<<<< HEAD
                 //releaseVideo(index);
+=======
+                releaseVideo(index);
+>>>>>>> replace ijkplayer with videoview
             }
 
             @Override
@@ -189,6 +202,41 @@ public class FragmentRecommand extends Fragment {
         View itemView = mRv.getChildAt(position);
         final VideoPlayerIJK ijkPlayer = itemView.findViewById(R.id.ijkPlayer);
         ijkPlayer.start();
+<<<<<<< HEAD
+=======
+
+//        ijkPlayer.setListener(new VideoPlayerListener(){
+//            @Override
+//            public void onBufferingUpdate(IMediaPlayer mp, int percent) {
+//            }
+//
+//            @Override
+//            public void onCompletion(IMediaPlayer mp) {
+//            }
+//
+//            @Override
+//            public boolean onError(IMediaPlayer mp, int what, int extra) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onPrepared(IMediaPlayer mp) {
+//            }
+//
+//            @Override
+//            public void onSeekComplete(IMediaPlayer mp) {
+//            }
+//
+//            @Override
+//            public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
+//            }
+//        });
+>>>>>>> replace ijkplayer with videoview
     }
 
 
@@ -214,6 +262,7 @@ public class FragmentRecommand extends Fragment {
             }
         });
     }
+<<<<<<< HEAD
 
     @Override
     public void onResume() {
@@ -222,6 +271,10 @@ public class FragmentRecommand extends Fragment {
     }
 
     //    private void videoScreenInit() {
+=======
+//
+//    private void videoScreenInit() {
+>>>>>>> replace ijkplayer with videoview
 //        if (isPortrait) {
 //            portrait();
 //        } else {

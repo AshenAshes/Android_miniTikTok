@@ -115,6 +115,7 @@ public class FragmentLocation extends Fragment {
         }
     }
 
+
     public void fetchFeed(View view) {
         Call<Response_GET> call=miniDouyinService.getVideo();
         call.enqueue(new Callback<Response_GET>(){

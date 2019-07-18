@@ -154,8 +154,20 @@
             android:id="@+id/text_btn_turn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_below="@+id/btn_turn_out"
             android:layout_marginRight="16dp"
+=======
+            android:id="@+id/btn_10s"
+            android:text="10s录制"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_delete"
+            android:text="DELETE"
+>>>>>>> replace ijkplayer with videoview
             android:layout_alignParentRight="true"
             android:layout_marginTop="6dp"
             android:text="翻转"
@@ -195,6 +207,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_marginRight="8dp"
             android:text="闪光灯"
             android:textColor="@color/white"
@@ -211,5 +224,30 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/exit" />
 
+=======
+            android:id="@+id/btn_refresh"
+            android:text="RETURN"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btn_delete"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_upload"
+            android:text="UPLOAD"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btn_delete"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_picture"
+            android:text="视频模式"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_flash"
+            android:text="开启闪光灯"
+            android:layout_alignParentRight="true"/>
+>>>>>>> replace ijkplayer with videoview
     </RelativeLayout>
 </RelativeLayout>
