@@ -23,16 +23,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/net_config"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <meta-data android:name="Mob-AppKey" android:value="2bbec4a421f10"/>
         <meta-data android:name="Mob-AppSecret" android:value="7d53415ebb75aa5a8d44eeb7916e0c7a"/>
         <activity android:name=".SplashScreenActivity"  android:theme="@style/splashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity android:name=".MainActivity1">
             <!--<intent-filter>-->
@@ -48,11 +49,11 @@
         <activity android:name=".VideoActivity"/>
         <activity android:name=".ExitActivity"/>
         <activity android:name=".LoginActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.mob.tools.MobUIShell"
