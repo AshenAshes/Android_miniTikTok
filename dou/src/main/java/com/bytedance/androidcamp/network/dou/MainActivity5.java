@@ -22,7 +22,6 @@ public class MainActivity5 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main5);
-        Button button = findViewById(R.id.button);
 
         bindActivity(R.id.bottomButton1, MainActivity1.class);
         bindActivity(R.id.bottomButton2, MainActivity2.class);
@@ -35,12 +34,6 @@ public class MainActivity5 extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.pageBackground));
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                
-            }
-        });
     }
 
     private void bindActivity(final int btnId, final Class<?> activityClass){

@@ -68,7 +68,7 @@
         android:layout_marginTop="4dp"
         android:background="@drawable/login_button_background"
         android:text="获取验证码"
-        android:textSize="14sp"
+        android:textSize="13sp"
         style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/white" />
 
