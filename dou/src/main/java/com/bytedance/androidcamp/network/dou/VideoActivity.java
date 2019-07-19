@@ -117,6 +117,7 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
         likeDbHelper=new LikeDbHelper(this);
         database=likeDbHelper.getWritableDatabase();
 
+
         url = getIntent().getStringExtra("url");
         name=getIntent().getStringExtra("name");
         mVideoView = findViewById(R.id.video_container);
@@ -597,11 +598,11 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
         }else{
             Cursor cursor=null;
             try{
+                Log.d("database", url);
                 cursor=database.query(LikeContract.LikeNode.TABLE_NAME, null,"url like ?",
                         new String[]{url},null,null,null);
-
                 if(cursor!=null && cursor.moveToNext()){
-                    int count=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
+                    result=cursor.getInt(cursor.getColumnIndex(LikeContract.LikeNode.COLUMN_COUNT));
                 }else{
                     ContentValues values=new ContentValues();
                     int count=(int)(100+Math.random()*200);
@@ -621,6 +622,7 @@ public class VideoActivity extends AppCompatActivity  implements VideoGestureRel
             }finally {
                 if(cursor!=null){
                     cursor.close();
+                    cursor=null;
                 }
             }
         }

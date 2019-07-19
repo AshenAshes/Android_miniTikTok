@@ -57,10 +57,10 @@ public class MainActivity1 extends AppCompatActivity {
             @Override
             public Fragment getItem(int position) {
                 if (position == 0) {
-                    linearLayout.setBackgroundColor(0x00000000);//@null
+                    //linearLayout.setBackgroundColor(0x00000000);//@null
                     return new FragmentRecommand();
                 } else {
-                    linearLayout.setBackgroundColor(0xff000000);//black
+                   //linearLayout.setBackgroundColor(0xff000000);//black
                     return new FragmentLocation();
                 }
             }
@@ -78,6 +78,29 @@ public class MainActivity1 extends AppCompatActivity {
                     return "附近";
             }
         });
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0){
+                    linearLayout.setBackgroundColor(0x00000000);
+                }
+                else{
+                    linearLayout.setBackgroundColor(0xff000000);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         tableLayout.setupWithViewPager(pager);
     }
 
