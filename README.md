@@ -1,30 +1,48 @@
 # ShortTerm_miniTikTok
 
-Contributors: **AshenAshes**, **RUA**
+Contributors: **AshenAshes**, **[RUA](https://github.com/GoldfischeRUA)**
 
----
-2019.7.18 [7am]
+This is our 2019 Bytedance Android summer camp final project. We implement an APP imitating TikTok. 
 
-&emsp;&emsp;To be continued later...
+&emsp;
+
+## Version
+
+Android API 28, all dependencies hava migrate to AndroidX.
+
+&emsp;
+
+## Interface and feature
+
+**SMS vertification code(MobTech support):**
+
+![vertification code](figure/check.png)
+
+**Main Activity Design**
+Immersive design(The bottom black line is my phone virtual buttons), load recommended videos fetching from server when you enter(meanwhile cached in advace) and support switch by moving vertically.
+
+![Main Activity](figure/MainActivity.png)
+
+**Video RecyclerView**
+Here lists all videos uploaded by all users. We use Glide to load the cover.
+
+![Location](figure/location.jpg)
 
 
----
-2019.7.17 [10am]
+**ijkPlayer**
+Everytime you click a cover, you will enter the chosen video. We use ijkPlayer to play the video and support adjust volumn and brightness by finger just like Bilibili.
 
-&emsp;&emsp;In the early morning I was too tired to add the RUA's camera part to project. Now I update it.
+![ijkPlayer](figure/ijkplayer.jpg)![adjust](figure/adjust.jpg)
 
----
-2019.7.17 [4am]
 
-&emsp;&emsp;Yesterday I make the videoPlayer Page using videoview, but the speed is not so satisfying. After today's course learning ijkplayer, RUA  suggest me replacing the older one with ijkplayer. So I did it. Besides, I used gesture to up or down the volume and the brightness. DoubleClick animation also added by the way.
+**Camera and file**
+Our camera supports recording video, and once you finish a shot, you can upload it to our server and see it in the Video RecyclerView memtioned before.
 
-&emsp;&emsp;RUA modified her code about camera, making it possible to preview the video before uploading, also allowing to regret and delete the video.
+![camera](figure/camera.jpg)
 
----
-2019.7.15  [3am]
 
-&emsp;&emsp;I partly finished the style design, including the open window ,app main interfaces, the logic of jumping around and add RUA's code to my project. RUA wrote the camera shooting, video saving and local upload. 
+**Database**
+Every like is saved in native database.
 
-&emsp;&emsp;I met some errors caused by the different android versions. Thanks to the Google, Android Studio solved it automatically. (using Refactor --> Migrate to AndroidX) 
 
-&emsp;&emsp;Shortcomings still exist. Good luck later.
+![database](figure/like.jpg)
