@@ -16,7 +16,7 @@ Android API 28, all dependencies hava migrate to AndroidX.
 
 **SMS vertification code(MobTech support):**
 
-![vertification code](figure/check.png)
+![vertification code](/figure/check.png)
 
 **Main Activity Design**
 Immersive design(The bottom black line is my phone virtual buttons), load recommended videos fetching from server when you enter(meanwhile cached in advace) and support switch by moving vertically.
